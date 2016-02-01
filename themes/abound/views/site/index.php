@@ -223,7 +223,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         <tr>
             <td valign="middle">Daytime Telephone: </td>
             <td valign="middle"><span id="sprytel_daytime"> 
- <input name="tel_daytime" type="text" id="tel_daytime" tabindex="6" value="" /> *
+ <input name="tel_daytime" type="text" id="tel_daytime" tabindex="6" value="" /> 
  <span class="textfieldInvalidFormatMsg">Invalid format.</span><span class="textfieldRequiredMsg">A value is required.</span></span>
             </td>
             <td valign="middle">&nbsp;</td>
@@ -234,7 +234,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
                 <br />
             </td>
             <td valign="middle"><span id="spry_tel_evening"> 
- <input type="text" name="tel_evening" id="tel_evening" tabindex="7" /> *
+ <input type="text" name="tel_evening" id="tel_evening" tabindex="7" /> 
  <span class="textfieldInvalidFormatMsg">Invalid format.</span><span class="textfieldRequiredMsg">A value is required.</span></span>
             </td>
             <td valign="middle">&nbsp;</td>
@@ -1620,16 +1620,16 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     var sprytextfield4 = new Spry.Widget.ValidationTextField("spry_email", "email", {
         validateOn: ["blur"]
     });
-    var sprytextfield5 = new Spry.Widget.ValidationTextField("sprytel_daytime", "phone_number", {
-        format: "phone_custom",
-        pattern: "0XXXXXXXXXX",
-        validateOn: ["blur"]
-    });
-    var sprytextfield6 = new Spry.Widget.ValidationTextField("spry_tel_evening", "phone_number", {
-        format: "phone_custom",
-        pattern: "0XXXXXXXXXX",
-        validateOn: ["blur"]
-    });
+    // var sprytextfield5 = new Spry.Widget.ValidationTextField("sprytel_daytime", "phone_number", {
+    //     format: "phone_custom",
+    //     pattern: "0XXXXXXXXXX",
+    //     validateOn: ["blur"]
+    // });
+    // var sprytextfield6 = new Spry.Widget.ValidationTextField("spry_tel_evening", "phone_number", {
+    //     format: "phone_custom",
+    //     pattern: "0XXXXXXXXXX",
+    //     validateOn: ["blur"]
+    // });
     var sprytextfield7 = new Spry.Widget.ValidationTextField("spry_tel_mobile", "phone_number", {
         validateOn: ["blur"],
         format: "phone_custom",
