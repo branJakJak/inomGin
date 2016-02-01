@@ -16,7 +16,8 @@
     <?php 
 
     $this->widget('zii.widgets.grid.CGridView', array(
-    'dataProvider'=>$dataprovider,
+    'filter'=>$leadModel,
+    'dataProvider'=>$leadModel->search(),
     'columns'=>array(
         'id', 
         'policy_holder_1_title',          // display the 'title' attribute
