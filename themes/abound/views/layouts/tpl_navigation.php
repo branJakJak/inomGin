@@ -18,7 +18,7 @@
                     'encodeLabel'=>false,
                     'items'=>array(
                         array('label'=>'Home', 'url'=>array('/site/index')),
-      //                   array('label'=>'Graphs & Charts', 'url'=>array('/site/page', 'view'=>'graphs')),
+                        array('label'=>'Submittion', 'url'=>array('/submittion')),
       //                   array('label'=>'Forms', 'url'=>array('/site/page', 'view'=>'forms')),
       //                   array('label'=>'Tables', 'url'=>array('/site/page', 'view'=>'tables')),
 						// array('label'=>'Interface', 'url'=>array('/site/page', 'view'=>'interface')),

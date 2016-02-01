@@ -31,8 +31,14 @@ class SubmitFormController extends Controller
 	public function actionIndex()
 	{
 		if (Yii::app()->request->isPostRequest) {
-			echo json_encode($_POST);
-			die();
+	        $mainFormHelper = new MainFormHelper();
+	        $mainLeadObj = $mainFormHelper->setFormValToObj($_POST);
+	        $mainLeadObj->user_id = Yii::app()->user->id;
+	        if ($mainLeadObj->save()) {
+	        	Yii::app()->user->setFlash("success","Success! Lead saved");
+	        }else{
+				Yii::app()->user->setFlash("error",CHtml::errorSummary($mainLeadObj));
+	        }
 		}
 		$this->redirect(array('/site/index'));
 	}

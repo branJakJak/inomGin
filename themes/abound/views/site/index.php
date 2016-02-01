@@ -70,8 +70,26 @@ Yii::app()->clientScript->registerCssFile('//code.jquery.com/ui/1.10.0/themes/ba
 
 Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/selectvalidation/SpryValidationSelect.css');
 
-?>
 
+$flashCssCode = <<<EOL
+.success-flash-message{
+    border: 1px solid green;
+    text-indent: 17px;
+    margin: 0px 34px;
+    margin-bottom: 16px;
+    padding: 16px;
+}
+.error-flash-message{
+    border: 1px solid red;
+    text-indent: 17px;
+    margin: 0px 34px;
+    margin-bottom: 16px;
+    padding: 16px;
+}
+EOL;
+Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
+
+?>
 
 
 <?php if (Yii::app()->user->isGuest): ?>
@@ -90,7 +108,10 @@ Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/selectvalidat
 
 <div class="nav">
     <div class="navleft">
-        <a href="#">Home</a> <!-- |  -->
+        <?php echo CHtml::link('Home', array('/site/index')); ?>
+        <?php if (Yii::app()->user->checkAccess("administrator")): ?>
+            | <?php echo CHtml::link('Submittion', array('/submittion')); ?>
+        <?php endif ?>
 <!--         <a href="#">Add Client</a> | 
         <a href="#">Search</a> | 
         <a href="#">Lender Database</a> | 
@@ -102,6 +123,16 @@ Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/selectvalidat
 
 
 <?php echo CHtml::beginForm(array('/submitForm'), 'post', array('id'=>'details','name'=>"details")); ?>
+    <?php if (Yii::app()->user->hasFlash("success")): ?>
+        <div class='success-flash-message'>
+            <?php echo Yii::app()->user->getFlash("success") ?>
+        </div>
+    <?php endif ?>
+    <?php if (Yii::app()->user->hasFlash("error")): ?>
+        <div class="error-flash-message">
+            <?php echo Yii::app()->user->getFlash("error") ?>
+        </div>
+    <?php endif ?>
 <!-- <form id="details" name="details" method="post" action="add_client_ref.php"> -->
     <table border="0" cellspacing="2px" cellpadding="2px" class="inputtbl" style=" border-bottom:none; padding:5px;">
         <tr class="tablehead">
@@ -117,7 +148,7 @@ Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/selectvalidat
         <tr>
             <td valign="middle">Closer:</td>
             <td valign="middle"><span id="sprytextfield11"> 
- <input name="closer" type="text" id="closer" value="" /> 
+ <input name="closer" type="text" id="closer" value="<?php echo Yii::app()->user->name ?>" /> 
  <span class="textfieldRequiredMsg">A value is required.</span></span>*</td>
             <td valign="middle">&nbsp;</td>
             <td valign="middle">&nbsp;</td>

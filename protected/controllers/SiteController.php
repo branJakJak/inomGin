@@ -57,7 +57,8 @@ class SiteController extends Controller
 	 */
 	public function actionIndex()
 	{
-		
+		// Yii::app()->user->setFlash("success","Success! Lead saved");	
+		// Yii::app()->user->setFlash("error","error something");
 		$this->layout = "tonic";
 		$this->render('index');		
 		// $this->layout = "clear";
