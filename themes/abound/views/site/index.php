@@ -48,7 +48,7 @@ Yii::app()->clientScript->registerScript('fillCodeJs', $fillCodeJs, CClientScrip
 Yii::app()->clientScript->registerCssFile($baseUrl.'/css/tonic.css');
 
 /*spry textfield*/
-Yii::app()->clientScript->registerScriptFile($baseUrl.'/Spry/includes_minified/SpryValidationTextField.js', CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile($baseUrl.'/Spry2/includes_minified/SpryValidationTextField.js', CClientScript::POS_HEAD);
 
 /*latest jquery*/
 Yii::app()->clientScript->registerScriptFile('//code.jquery.com/jquery-latest.min.js', CClientScript::POS_HEAD);
@@ -60,15 +60,15 @@ Yii::app()->clientScript->registerScriptFile($baseUrl.'/easyModal/jquery.easyMod
 Yii::app()->clientScript->registerScriptFile('//code.jquery.com/ui/1.10.0/jquery-ui.js', CClientScript::POS_HEAD);
 
 /**/
-Yii::app()->clientScript->registerScriptFile($baseUrl.'/Spry/includes_minified/SpryValidationSelect.js', CClientScript::POS_HEAD);
+Yii::app()->clientScript->registerScriptFile($baseUrl.'/Spry2/includes_minified/SpryValidationSelect.js', CClientScript::POS_HEAD);
 
 Yii::app()->clientScript->registerScriptFile('//tinymce.cachefly.net/4.0/tinymce.min.js', CClientScript::POS_END);
 
-Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry/widgets/textfieldvalidation/SpryValidationTextField.css');
+Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/textfieldvalidation/SpryValidationTextField.css');
 
 Yii::app()->clientScript->registerCssFile('//code.jquery.com/ui/1.10.0/themes/base/jquery-ui.css');
 
-Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry/widgets/selectvalidation/SpryValidationSelect.css');
+Yii::app()->clientScript->registerCssFile($baseUrl.'/Spry2/widgets/selectvalidation/SpryValidationSelect.css');
 
 ?>
 
