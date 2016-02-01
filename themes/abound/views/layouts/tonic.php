@@ -22,7 +22,7 @@ $baseUrl = Yii::app()->theme->baseUrl;
     }
    body {
        font-family: sofachrome;
-       font-size: 11px;
+       font-size: 11px !important;
    }
  </style> 
 
