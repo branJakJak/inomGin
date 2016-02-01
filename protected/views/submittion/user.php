@@ -6,7 +6,7 @@
         
 <?php
     $this->beginWidget('zii.widgets.CPortlet', array(
-        'title'=>'Leads submitted by '.$userModel->name,
+        'title'=>'Leads submitted by '.$userModel->username,
     ));
 ?>
     <?php if (Yii::app()->user->name === 'admin'): ?>
