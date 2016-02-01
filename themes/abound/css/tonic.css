@@ -1,0 +1,194 @@
+@charset "utf-8";
+/* CSS Document */
+.login {
+  margin-top:100px;
+}
+.login table {
+  border:1px solid #039
+}
+
+.loginimg {
+  width:200px;
+  margin: 0 auto 10px;
+}
+
+.error {
+  border:1px solid #C00;
+  background-image:url(../img/RedCross-sm.png);
+  background-repeat:no-repeat;
+  background-position:2px 2px;
+  padding-left:20px;
+  color:#C00;
+  width:400px;
+  margin:auto;
+  margin-top:5px;
+}
+.notice {
+  border:1px solid #F60;
+  background-image:url(../img/YellowExclamation-sm.png);
+  background-repeat:no-repeat;
+  background-position:2px 2px;
+  padding-left:20px;
+  width:400px;
+  color:#F60;
+  margin:auto;
+  margin-top:5px;
+}
+
+.loggedin {
+  float:right;
+  margin-top:10px;
+  margin-right:5px;
+}
+.nav {
+  background-color:#039;
+  background-image:url(../img/grad.png);
+  background-repeat:repeat-x;
+  color:#FFF;
+  margin: 5px 0px 30px 0px;
+  padding-left: 10px; padding-right:10px;
+  font-size:18px;
+  vertical-align:middle;
+  height:35px;
+}
+
+.navleft{
+  position:relative;
+  top:5px;
+  float:left;
+}
+.navright{
+  position:relative;
+  top:5px;
+  float:right
+}
+.nav a {
+  color:#FFF;
+}
+  
+body {
+  font-family:Tahoma, Geneva, sans-serif;
+  color:#333;
+  margin:0;
+  padding:0;
+}
+
+.tablehead {
+  background-color:#039;
+  background-image:url(../img/grad.png);
+  background-repeat:repeat-x;
+  border:1px solid #039;
+  color:#FFF;
+}
+h3 {
+  color:#FFF;
+  font-size:18px;
+  padding:0px;
+  margin:3px;
+}
+h4 {
+  color:#039;
+  font-size:18px;
+  padding:0px;
+  margin:3px;
+}
+button {
+  color: #039;;
+  border: 1px solid gray;
+  font-weight: bold;
+}
+.savebutton {
+  color:#3C0;
+  border: 1px solid #CCC;
+  font-weight: bold;
+  margin:5px;
+}
+.savebutton img {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.resetbutton {
+  color:#C00;
+  border: 1px solid #CCC;
+  font-weight: bold;
+  margin:5px;
+}
+.resetbutton img {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+.addbutton {
+  color:#3C0;
+  border: 1px solid #CCC;
+  font-weight: bold;
+  margin:5px;
+}
+.addbutton img {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.delbutton {
+  color:#C00;
+  border: 1px solid #CCC;
+  font-weight: bold;
+  margin:5px;
+}
+.delbutton img {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+.inputtbl {
+  margin:auto;
+  border:1px solid #039;
+  width:95%;
+}
+.container {
+  margin:auto;
+  width:95%;
+}
+.fields
+{
+  background-color: #ffffff;
+  border: 1px solid gray;
+  color: #black;
+  padding: 2px;
+  font-size: 10pt
+}
+
+input
+{
+  background-color: #ffffff;
+  border: 1px solid gray;
+  color: #black;
+  padding: 2px;
+  font-size: 10pt
+}
+.searchtable {
+  border:1px solid #039;
+  margin:20px auto 0 auto;}
+  
+.pending {color:#3399FF;background-color:#D5FFFF;font-size:12px;}
+.awaiting {color:#9900CC;background-color:#DBCEFF;font-size:12px;}
+.good {color:#006600;background-color:#BFFFDF;font-size:12px;}
+.bad {color:#990000;background-color:#FFC6C6;font-size:12px;}
+.needsaction {color:#CC6600;background-color:#FFD9BF;font-size:12px;}
+.complete {color:#0033FF;background-color:#B7E2FF;font-size:12px;}
+
+.portalwrap {
+  width:800px;
+  margin:auto;
+  border:1px solid #06C;
+}
+
+.foot {
+  text-align:center;
+  font-size:10px;
+  color:#666;
+}
+.smalltext {
+  font-size:14px;
+  white-space:nowrap;
+}
+.tttext {
+  font-size:10px;
+}
