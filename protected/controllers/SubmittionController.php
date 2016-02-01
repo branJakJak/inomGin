@@ -49,6 +49,7 @@ class SubmittionController extends CController
     	}
     	/*get leads submitted by this user */
     	$leadModel = new MainLeadModel;
+    	$leadModel->unsetAttributes();
     	$leadModel->user_id = $userModel->id;
     	$dataprovider = $leadModel->search();
     	$this->render('user',compact('dataprovider','leadModel','userModel'));
