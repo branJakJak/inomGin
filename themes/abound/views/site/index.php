@@ -110,7 +110,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <div class="navleft">
         <?php echo CHtml::link('Home', array('/site/index')); ?>
         <?php if (Yii::app()->user->checkAccess("administrator")): ?>
-            | <?php echo CHtml::link('Submittion', array('/submittion')); ?>
+            | <?php echo CHtml::link('Submitted Data', array('/submittion')); ?>
         <?php endif ?>
 <!--         <a href="#">Add Client</a> | 
         <a href="#">Search</a> | 
