@@ -25,18 +25,13 @@
         'policy_holder_1_surname',          // display the 'title' attribute
         'policy_holder_1_dateOfBirth',          // display the 'title' attribute
         'policy_holder_1_email',          // display the 'title' attribute
-        'policy_holder_1_dayTimeTelephone',          // display the 'title' attribute
-        // array(            // display 'create_time' using an expression
-        //     'name'=>'create_time',
-        //     'value'=>'date("M j, Y", $data->create_time)',
-        // ),
-        // array(            // display 'author.username' using an expression
-        //     'name'=>'authorName',
-        //     'value'=>'$data->author->username',
-        // ),
-        // array(
-        //     'class'=>'CButtonColumn',
-        // ),
+        // 'policy_holder_1_dayTimeTelephone',          // display the 'title' attribute
+        array(
+            'class'=>'CButtonColumn',
+            'buttons'=>array(
+                'delete'=>array('url'=>'$this->grid->controller->createUrl("/mainLead/delete", array("id"=>$data->primaryKey))')
+            )
+        ),
     ),
     ));
 
