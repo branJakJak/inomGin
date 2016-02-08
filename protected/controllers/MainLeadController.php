@@ -113,8 +113,14 @@ class MainLeadController extends Controller
 		$this->loadModel($id)->delete();
 
 		// if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-		if(!isset($_GET['ajax']))
-			$this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+		if(!isset($_GET['ajax'])){
+			if (isset(Yii::app()->request->getUrlReferrer())) {
+				$this->redirect(Yii::app()->request->getUrlReferrer());
+			}else{
+				$this->redirect(array('/submittion'));
+			}
+        }
+
 	}
 
 	/**
