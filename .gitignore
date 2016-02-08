@@ -9,3 +9,5 @@ protected/config/*
 *.prod
 .idea/
 .phpintel/
+
+assets
