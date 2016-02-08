@@ -34,9 +34,9 @@
         //     'name'=>'authorName',
         //     'value'=>'$data->author->username',
         // ),
-        array(
-            'class'=>'CButtonColumn',
-        ),
+        // array(
+        //     'class'=>'CButtonColumn',
+        // ),
     ),
     ));
 
