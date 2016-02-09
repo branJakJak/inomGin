@@ -108,7 +108,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 
 <div class="nav">
     <div class="navleft">
-        <?php echo CHtml::link('Home', array('/site/index')); ?>
+        <?php echo CHtml::link('Home', array('/site/index'),array('style'=>'padding-left: 30px;')); ?>
         <?php if (Yii::app()->user->checkAccess("administrator")): ?>
             | <?php echo CHtml::link('Submitted Data', array('/submittion')); ?>
         <?php endif ?>
@@ -134,7 +134,86 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         </div>
     <?php endif ?>
 <!-- <form id="details" name="details" method="post" action="add_client_ref.php"> -->
+
+
+
+
+
+
+
     <table border="0" cellspacing="2px" cellpadding="2px" class="inputtbl" style=" border-bottom:none; padding:5px;">
+
+        <tr class="tablehead">
+            <td colspan="4" valign="middle">
+                <h3>Hotkey Criteria</h3>
+            </td>
+        </tr>
+
+        <tr>
+            <td width="15%" valign="middle">&nbsp;</td>
+            <td width="35%" valign="middle">&nbsp;</td>
+            <td width="15%" valign="middle">&nbsp;</td>
+            <td width="35%" valign="middle">&nbsp;</td>
+        </tr>
+        <tr>
+                <td valign="middle">Over 3 Hours Delay:</td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('over3_hours', '', array("Yes"=>"Yes","No"=>"No")); ?>
+                </td>
+                <td valign="middle">Within last 6 Years </td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('within_last_6_years', '', array("Yes"=>"Yes","No"=>"No")); ?>
+                </td>
+        </tr>
+        <tr>
+                <td valign="middle">Technical/Airline Fault :</td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('techinal_airline_fault', '', array("Yes"=>"Yes","No"=>"No")); ?>
+                </td>
+                <td valign="middle">Flew with Airlines Agreed</td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('flew_with_airlines_agreed', '', array("British Airways"=>"British Airways","Thomson"=>"Thomson","Thomas Cook"=>"Thomas Cook","Air France"=>"Air France","Flybe"=>"Flybe","KLM"=>"KLM","Monarch"=>"Monarch","Virgin Atlantic"=>"Virgin Atlantic","Jet2"=>"Jet2","EasyJet"=>"EasyJet","RyanAir"=>"RyanAir")); ?>
+                </td>
+        </tr>
+        <tr>
+                <td valign="middle">Ever made any claim before :</td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('ever_made_claim_before', '', array("Yes"=>"Yes","No"=>"No")); ?>
+                </td>
+                <td valign="middle">Happy to Claim  : </td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('happy_to_claim', '', array("Yes"=>"Yes","No"=>"No")); ?>
+                </td>
+        </tr>
+        <tr>
+                <td valign="middle">Time to talk :</td>
+                <td valign="middle">
+                    <?php 
+                        $hoursOption = range(1, 24);
+
+                        array_fill_keys(array_values($hoursOption), $hoursOption);
+                        $minuteOption = range(1, 60);
+                        array_fill_keys(array_values($minuteOption), $minuteOption);
+                     ?>
+                    <?php echo CHtml::dropDownList('time_to_talk_hrs', '', $hoursOption,array('prompt'=>'HH')); ?>
+                    <?php echo CHtml::dropDownList('time_to_talk_mins', '', $minuteOption,array('prompt'=>'MM')); ?>
+                </td>
+                <td valign="middle">Flew with Airlines Agreed</td>
+                <td valign="middle">
+                    <?php echo CHtml::dropDownList('flew_with_airlines_agreed', '', array("British Airways"=>"British Airways","Thomson"=>"Thomson","Thomas Cook"=>"Thomas Cook","Air France"=>"Air France","Flybe"=>"Flybe","KLM"=>"KLM","Monarch"=>"Monarch","Virgin Atlantic"=>"Virgin Atlantic","Jet2"=>"Jet2","EasyJet"=>"EasyJet","RyanAir"=>"RyanAir")); ?>
+                </td>
+        </tr>
+
+        <tr>
+            <td valign="middle">&nbsp;</td>
+            <td valign="middle">&nbsp;</td>
+            <td valign="middle">&nbsp;</td>
+            <td valign="middle">&nbsp;</td>
+        </tr>
+
+
+
+
         <tr class="tablehead">
             <td width="15%" valign="middle">
                 <h3>Policy Holder 1</h3>
@@ -344,6 +423,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
                 <input type="checkbox" name="wants_cc" id="wants_cc" value="1" /> Include Free PPI assesment</td>
         </tr>
     </table>
+
     <div id="specific_PPI" class="specific">
         <table border="0" cellspacing="2px" cellpadding="2px" class="inputtbl" style="padding:5px; border-top-style:hidden; border-bottom-style:hidden;">
             <tr class="tablehead">
@@ -360,25 +440,27 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
             <tr>
                 <td valign="middle">Type:</td>
                 <td valign="middle"><span id="spryselect2"> 
- <select name="PPI-type" class="fields" id="PPI-type"> 
- <option value="Loan" id="PPI">Loan</option> 
- <option value="Mortgage" id="PPI">Mortgage</option> 
- <option value="Credit Card" id="PPI">Credit Card</option> 
- <option value="Store Card" id="PPI">Store Card</option> 
- <option value="Hire Purchase" id="PPI">Hire Purchase</option> 
- <option value="Overdraft" id="PPI">Overdraft</option> 
- <option value="Catalogue" id="PPI">Catalogue</option> 
- <option value="MPPI" id="PPI">MPPI</option> 
- <option value="Motor Warranty Insurance" id="PPI">Motor Warranty Insurance</option> 
- <option value="Other" id="PPI">Other</option> 
- </select> 
- <span class="selectInvalidMsg">Please select a valid item.</span><span class="selectRequiredMsg">Please select an item.</span></span>
-                    *</td>
+                     <select name="PPI-type" class="fields" id="PPI-type"> 
+                     <option value="Loan" id="PPI">Loan</option> 
+                     <option value="Mortgage" id="PPI">Mortgage</option> 
+                     <option value="Credit Card" id="PPI">Credit Card</option> 
+                     <option value="Store Card" id="PPI">Store Card</option> 
+                     <option value="Hire Purchase" id="PPI">Hire Purchase</option> 
+                     <option value="Overdraft" id="PPI">Overdraft</option> 
+                     <option value="Catalogue" id="PPI">Catalogue</option> 
+                     <option value="MPPI" id="PPI">MPPI</option> 
+                     <option value="Motor Warranty Insurance" id="PPI">Motor Warranty Insurance</option> 
+                     <option value="Other" id="PPI">Other</option> 
+                     </select> 
+                     <span class="selectInvalidMsg">Please select a valid item.</span><span class="selectRequiredMsg">Please select an item.</span></span>
+                *
+                </td>
                 <td valign="middle">Credit Provider:</td>
                 <td valign="middle"><span id="sprytextfield4"> 
- <input type="text" name="PPI-provider" id="PPI-provider" autocomplete="off" /> 
- <span class="textfieldRequiredMsg">A value is required.</span></span>
-                    *</td>
+                    <input type="text" name="PPI-provider" id="PPI-provider" autocomplete="off" /> 
+                    <span class="textfieldRequiredMsg">A value is required.</span></span>
+                *
+                </td>
             </tr>
             <tr>
                 <td valign="middle">Account Number:</td>
@@ -387,8 +469,8 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
                 </td>
                 <td valign="middle">Job Title:</td>
                 <td valign="middle"><span id="sprytextfield6"> 
- <input type="text" name="PPI-job_title" id="PPI-job_title" /> 
- </span>
+                     <input type="text" name="PPI-job_title" id="PPI-job_title" /> 
+                     </span>
                 </td>
             </tr>
             <tr>
@@ -398,24 +480,24 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
                 <td valign="middle">
                     <input type="hidden" name="PPI-emp_stat" class="fields" id="PPI-emp_stat" value="-Depreciated-">
                     <!--<span id="spryselect3"><select name="emp_stat" class="fields" id="emp_stat" readonly>  
- <option selected="selected">-Depreciated-</option>  
- <option value="Employed">Employed</option>  
- <option value="Part-Time">Part-Time</option>  
- <option value="Temporary">Temporary</option>  
- <option value="Self Employed">Self Employed</option>  
- <option value="Retired">Retired</option>  
- <option value="Student">Student</option>  
- <option value="Unpaid Work">Unpaid Work</option>  
- <option value="Unemployed">Unemployed</option>  
- </select>-->
+                     <option selected="selected">-Depreciated-</option>  
+                     <option value="Employed">Employed</option>  
+                     <option value="Part-Time">Part-Time</option>  
+                     <option value="Temporary">Temporary</option>  
+                     <option value="Self Employed">Self Employed</option>  
+                     <option value="Retired">Retired</option>  
+                     <option value="Student">Student</option>  
+                     <option value="Unpaid Work">Unpaid Work</option>  
+                     <option value="Unemployed">Unemployed</option>  
+                     </select>-->
                     </span>
                 </td>
                 <td valign="middle">
                     <!--When Taken:-->
                 </td>
                 <td valign="middle"><span id="sprytextfield5"> 
- <input type="hidden" name="PPI-taken" id="PPI-taken" /> 
- </span>
+                    <input type="hidden" name="PPI-taken" id="PPI-taken" /> 
+                    </span>
                 </td>
             </tr>
             <tr>

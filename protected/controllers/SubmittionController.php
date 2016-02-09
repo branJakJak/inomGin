@@ -13,12 +13,8 @@ class SubmittionController extends CController
 	{
 		return array(
 			array('allow',
-				'actions'=>array('index','user'),
+				'actions'=>array('index','user','export','exportAll'),
 				'roles'=>array('administrator'),
-			),
-			array('allow',
-				'actions'=>array('export'),
-				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
@@ -78,6 +74,27 @@ class SubmittionController extends CController
 		$tempFileContainer = tempnam(sys_get_temp_dir(), "asd");
 
     	$cmd = Yii::app()->db->createCommand("SELECT * FROM tbl_gin where user_id = ".$userModel->id);
+		$csv = new ECSVExport($cmd);
+		$csv->setOutputFile($tempFileContainer);
+		$csv->toCSV();
+		echo file_get_contents($tempFileContainer);
+    }
+    public function actionExportAll()
+    {
+     	Yii::import('ext.ECSVExport.ECSVExport');
+    	$dateToday = date("Y-m-d");
+		$filename = 'all-leads-submitted-'.$dateToday;
+    	header("Pragma: public");
+    	header("Expires: 0");
+    	header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+    	header("Cache-Control: private",false);
+    	header("Content-Type: application/octet-stream");
+    	header("Content-Disposition: attachment; filename=\"$filename.csv\";" );
+    	header("Content-Transfer-Encoding: binary");
+    	/*find all lead and export*/
+		// $csv = new ECSVExport(MainLeadModel::model()->findAllByAttributes(array('user_id'=>$userModel->id)));
+		$tempFileContainer = tempnam(sys_get_temp_dir(), "asd");
+    	$cmd = Yii::app()->db->createCommand("SELECT * FROM tbl_gin");
 		$csv = new ECSVExport($cmd);
 		$csv->setOutputFile($tempFileContainer);
 		$csv->toCSV();
