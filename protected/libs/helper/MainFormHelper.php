@@ -120,7 +120,16 @@ class MainFormHelper
         $mainLeadObj->pba_specific_holiday_pattern_second = @$postData['hols2'];
         $mainLeadObj->pba_specific_holiday_pattern_third = @$postData['hols3'];
         $mainLeadObj->pba_specific_keep_insurance_sold = @$postData['pba_othinskeep'];
-
+        /**
+         * Hotkey new fields
+         */
+        $mainLeadObj->over_3_hours_delay = @$postData['over3_hours'];
+        $mainLeadObj->within_last_6_years = @$postData['within_last_6_years'];
+        $mainLeadObj->techinal_airline_fault = @$postData['techinal_airline_fault'];
+        $mainLeadObj->flew_with_airlines_agreed = @$postData['flew_with_airlines_agreed'];
+        $mainLeadObj->ever_made_claim_before = @$postData['ever_made_claim_before'];
+        $mainLeadObj->happy_to_claim= @$postData['happy_to_claim'];
+        $mainLeadObj->time_to_talk = @$postData['time_to_talk_hrs'] . ":".@$postData['time_to_talk_mins'];
         return $mainLeadObj;
     }
 

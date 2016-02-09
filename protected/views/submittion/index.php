@@ -60,6 +60,8 @@
 		    'type' => TbHtml::NAV_TYPE_LIST,
 		    'items' => $itemsCollection,
 		)); ?>
+		<hr>
+		<?php echo CHtml::link('<h3>Download all</h3>', array('exportAll'), array('class'=>'btn btn-primary btn-block')); ?>
 
 		<?php
 			$this->endWidget();
