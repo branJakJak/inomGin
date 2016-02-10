@@ -1,5 +1,18 @@
 <?php
-
+/**
+ * The followings are the available columns in table 'users':
+ * @var integer $id
+ * @var string $username
+ * @var string $password
+ * @var string $email
+ * @var string $activkey
+ * @var integer $createtime
+ * @var integer $lastvisit
+ * @var integer $superuser
+ * @var integer $status
+ * @var timestamp $create_at
+ * @var timestamp $lastvisit_at
+ */
 class User extends CActiveRecord
 {
 	const STATUS_NOACTIVE=0;
@@ -9,20 +22,6 @@ class User extends CActiveRecord
 	//TODO: Delete for next version (backward compatibility)
 	const STATUS_BANED=-1;
 	
-	/**
-	 * The followings are the available columns in table 'users':
-	 * @var integer $id
-	 * @var string $username
-	 * @var string $password
-	 * @var string $email
-	 * @var string $activkey
-	 * @var integer $createtime
-	 * @var integer $lastvisit
-	 * @var integer $superuser
-	 * @var integer $status
-     * @var timestamp $create_at
-     * @var timestamp $lastvisit_at
-	 */
 
 	/**
 	 * Returns the static model of the specified AR class.

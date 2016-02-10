@@ -13,6 +13,10 @@ class SubmittionController extends CController
 	{
 		return array(
 			array('allow',
+				'actions'=>array('search'),
+				'roles'=>array('facilitator','administrator'),
+			),
+            array('allow',
 				'actions'=>array('index','user','export','exportAll'),
 				'roles'=>array('administrator'),
 			),
@@ -99,5 +103,18 @@ class SubmittionController extends CController
 		$csv->setOutputFile($tempFileContainer);
 		$csv->toCSV();
 		echo file_get_contents($tempFileContainer);
+    }
+    public function actionSearch(){
+        $leadObj = new MainLeadModel();
+        $leadObj->unsetAttributes();
+        if (isset($_POST['MainLeadModel'])) {
+            $leadObj->attributes = $_POST['MainLeadModel'];
+            $leadObj = MainLeadModel::model()->findByAttributes(array('closer'=>$leadObj->closer));
+            if (!$leadObj) {
+                $leadObj = new MainLeadModel();
+                $leadObj->unsetAttributes();
+            }
+        }
+        $this->render('search',compact('leadObj'));
     }
 }
