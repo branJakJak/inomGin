@@ -74,11 +74,23 @@ class MainFormHelper
         $mainLeadObj->pba_specific_held_another_PBA = @$postData['pba_others'];
         $mainLeadObj->pba_specific_held_another_PBA_specify = @$postData['othacc_specific'];
 
+
+        $pbaBenefitsTranslator = new PBABenefitsTranslator();
         if ((@$postData['pba_benefits'] !== null && !empty($postData['pba_benefits']))) {
-            $mainLeadObj->pba_specific_account_benefits = implode("|", @$postData['pba_benefits']);
+            $pbaBenefitsTranslatedCollection = array();
+            foreach ($postData['pba_benefits'] as $currentBenefit) {
+                $pbaBenefitsTranslatedCollection[] = $pbaBenefitsTranslator->translate($currentBenefit);
+            }
+            $mainLeadObj->pba_specific_account_benefits = implode("|", $pbaBenefitsTranslatedCollection);
         }
+
+        $pbaReasonTranslator = new PBAReasonTranslator();
         if ((@$postData['pba_reason'] !== null) && !empty($postData['pba_reason'])) {
-            $mainLeadObj->pba_specific_account_benefits_reason = implode("|", @$postData['pba_reason']);
+            $pbaReasonTranslatedCollection = array();
+            foreach ($postData['pba_reason'] as $currentPbaReason) {
+                $pbaReasonTranslatedCollection[] = $pbaReasonTranslator->translate($currentPbaReason);
+            }
+            $mainLeadObj->pba_specific_account_benefits_reason = implode("|", $pbaReasonTranslatedCollection);
         }
 
         $mainLeadObj->pba_specific_missold_reason = @$postData['pba_specific_missold_reason'];
@@ -88,16 +100,27 @@ class MainFormHelper
         $mainLeadObj->pba_specific_requirements_not_mentioned_specific = @$postData['re_specific'];
         $mainLeadObj->pba_specific_exclusion_not_explained_specific = @$postData['ex_specific'];
 
+        $pbaBenefitsUsedTranslator = new PBABenefitsUsedTranslator();
         if ((@$postData['pba_benefits_used'] !== null) && !empty($postData['pba_benefits_used'])) {
-            $mainLeadObj->pba_specific_benefits_used = implode("|", @$postData['pba_benefits_used']);
+            $pbaBenefitsUsedCollection = array();
+            foreach ($postData['pba_benefits_used'] as $currentPbaBenefitsUsed) {
+                $pbaBenefitsUsedCollection[] = $pbaBenefitsUsedTranslator->translate($currentPbaBenefitsUsed);
+            }
+            $mainLeadObj->pba_specific_benefits_used = implode("|", $pbaBenefitsUsedCollection);
         }
 
         $mainLeadObj->pba_specific_home_emergency_specific = @$postData['claim_specific'];
         $mainLeadObj->pba_specific_registered_benefits = @$postData['pba_regben'];
         $mainLeadObj->pba_specific_registered_benefits_specify = @$postData['regben_specific'];
         $mainLeadObj->pba_specific_annual_review = @$postData['pba_review'];
+
+        $tcfTranslator = new PBATcfTranslator();
         if ((@$postData['pba_tcf'] !== null) && !empty($postData['pba_tcf'])) {
-            $mainLeadObj->pba_specific_tcf = implode("|", @$postData['pba_tcf']);
+            $pbaTcfCollection = array();
+            foreach ($postData['pba_tcf'] as $currentPbaTcf) {
+                $pbaTcfCollection[] = $tcfTranslator->translate($currentPbaTcf);
+            }
+            $mainLeadObj->pba_specific_tcf = implode("|", $pbaTcfCollection);
         }
 
         $mainLeadObj->pba_specific_uk_residents = @$postData['pba_uk_resident'];
@@ -108,17 +131,29 @@ class MainFormHelper
         $mainLeadObj->pba_specific_value_for_money = @$postData['pba_vfm'];
         $mainLeadObj->pba_specific_welcome_pack_received = @$postData['pba_welcome'];
         $mainLeadObj->pba_specific_sign_TC = @$postData['pba_terms'];
+
+        $translaterUnsuitable = new PBAUnsuitableTranslator();
         if ((@$postData['pba_unsuitable'] !== null) && !empty($postData['pba_unsuitable'])) {
-            $mainLeadObj->pba_specific_mobile_cover = implode("|", @$postData['pba_unsuitable']);
+            $translatedCollection = array();
+            foreach ($postData['pba_unsuitable'] as $currentPbaUnsuitable) {
+                $translatedCollection[] = $translaterUnsuitable->translate($currentPbaUnsuitable);
+            }
+            $mainLeadObj->pba_specific_mobile_cover = implode("|", $translatedCollection);
         }
-        if ((@$postData['pba_unsuitable'] !== null) && !empty($postData['pba_unsuitable'])) {
-            $mainLeadObj->pba_specific_travel_cover = implode("|", @$postData['pba_unsuitable']);
-        }
+//        if ((@$postData['pba_unsuitable'] !== null) && !empty($postData['pba_unsuitable'])) {
+//            $mainLeadObj->pba_specific_travel_cover = implode("|", @$postData['pba_unsuitable']);
+//        }
 
         $mainLeadObj->pba_specific_health_specific = @$postData['health_specific'];
-        $mainLeadObj->pba_specific_holiday_pattern_first = @$postData['hols1'];
-        $mainLeadObj->pba_specific_holiday_pattern_second = @$postData['hols2'];
-        $mainLeadObj->pba_specific_holiday_pattern_third = @$postData['hols3'];
+        if(isset($postData['hols1'])){
+            $mainLeadObj->pba_specific_holiday_pattern_first = HolidayPatternTranslator::translator($postData['hols1']);
+        }
+        if(isset($postData['hols2'])){
+            $mainLeadObj->pba_specific_holiday_pattern_second = HolidayPatternTranslator::translator($postData['hols2']);
+        }
+        if(isset($postData['hols3'])){
+            $mainLeadObj->pba_specific_holiday_pattern_third = HolidayPatternTranslator::translator($postData['hols3']);
+        }
         $mainLeadObj->pba_specific_keep_insurance_sold = @$postData['pba_othinskeep'];
         /**
          * Hotkey new fields
