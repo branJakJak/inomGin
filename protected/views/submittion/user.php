@@ -20,6 +20,7 @@
     'dataProvider'=>$leadModel->search(),
     'columns'=>array(
         'id', 
+        'closer',
         'policy_holder_1_title',          // display the 'title' attribute
         'policy_holder_1_forename',          // display the 'title' attribute
         'policy_holder_1_surname',          // display the 'title' attribute
