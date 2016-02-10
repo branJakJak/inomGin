@@ -130,6 +130,7 @@ class MainFormHelper
         $mainLeadObj->ever_made_claim_before = @$postData['ever_made_claim_before'];
         $mainLeadObj->happy_to_claim= @$postData['happy_to_claim'];
         $mainLeadObj->time_to_talk = @$postData['time_to_talk_hrs'] . ":".@$postData['time_to_talk_mins'];
+        $mainLeadObj->reason_for_delay = @$postData['reason_for_delay'];
         return $mainLeadObj;
     }
 
