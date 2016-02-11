@@ -21,8 +21,8 @@ $this->menu=array(
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'user_id',
+//		'id',
+//		'user_id',
 		'closer',
 		'policy_holder_1_title',
 		'policy_holder_1_forename',
@@ -116,5 +116,15 @@ $this->menu=array(
 		'pba_specific_holiday_pattern_third',
 		'pba_specific_declined_claim_specify',
 		'pba_specific_keep_insurance_sold',
+        "over_3_hours_delay",
+        "within_last_6_years",
+        "techinal_airline_fault",
+        "flew_with_airlines_agreed",
+        "ever_made_claim_before",
+        "happy_to_claim",
+        "time_to_talk",
+        "date_created",
+        "date_updated",
+        "reason_for_delay",
 	),
 )); ?>
