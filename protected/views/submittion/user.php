@@ -34,7 +34,7 @@
         // 'policy_holder_1_dayTimeTelephone',          // display the 'title' attribute
         array(
             'class'=>'CButtonColumn',
-            'template'=>'{view}{delete}',
+            'template'=>'{view} | {delete}',
             'buttons'=>array(
                 'delete'=>array('url'=>'$this->grid->controller->createUrl("/mainLead/delete", array("id"=>$data->primaryKey))'),
                 'view'=>array('url'=>'$this->grid->controller->createUrl("/mainLead/view", array("id"=>$data->primaryKey))')
