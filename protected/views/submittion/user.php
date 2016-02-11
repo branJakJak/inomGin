@@ -25,7 +25,7 @@
         'policy_holder_1_forename',          // display the 'title' attribute
         'policy_holder_1_surname',          // display the 'title' attribute
         array(            // display 'create_time' using an expression
-            // 'name'=>'policy_holder_1_dateOfBirth',
+             'name'=>'policy_holder_1_dateOfBirth',
             'header'=>'Date of birth',
             'value'=>'date("M j, Y", strtotime($data->policy_holder_1_dateOfBirth))',
         ),
