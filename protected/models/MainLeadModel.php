@@ -403,9 +403,11 @@ class MainLeadModel extends CActiveRecord
         $criteria->compare('ever_made_claim_before', $this->ever_made_claim_before, true);
         $criteria->compare('happy_to_claim', $this->happy_to_claim, true);
         $criteria->compare('time_to_talk', $this->time_to_talk, true);
-        $criteria->compare('date_created', $this->date_created, true);
+        // $criteria->compare('date(date_created)', date("Y-m-d",strtotime($this->date_created)));
         $criteria->compare('date_updated', $this->date_updated, true);
         $criteria->compare('reason_for_delay', $this->reason_for_delay, true);
+        
+
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

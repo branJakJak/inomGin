@@ -13,8 +13,11 @@
     <?php echo CHtml::link('<i class=" icon-download icon-white"></i> Export contents', array('export','username'=>$userModel->username),['class'=>'btn btn-primary']); ?>
     <?php endif ?>
 
-    <?php 
 
+<?php 
+
+?>
+<?php 
     $this->widget('zii.widgets.grid.CGridView', array(
     'filter'=>$leadModel,
     'dataProvider'=>$leadModel->search(),
@@ -24,13 +27,46 @@
         'policy_holder_1_title',          // display the 'title' attribute
         'policy_holder_1_forename',          // display the 'title' attribute
         'policy_holder_1_surname',          // display the 'title' attribute
-        array(            // display 'create_time' using an expression
-             'name'=>'policy_holder_1_dateOfBirth',
-            'header'=>'Date of birth',
-            'value'=>'date("M j, Y", strtotime($data->policy_holder_1_dateOfBirth))',
+        // array(            // display 'create_time' using an expression
+        //      'name'=>'policy_holder_1_dateOfBirth',
+        //     'header'=>'Date of birth',
+        //     'value'=>'date("M j, Y", strtotime($data->policy_holder_1_dateOfBirth))',
+        // ),
+        array(
+            'name'=>'add_account',
+            'header'=>'Add account',
+            'value'=>'$data->add_account',
         ),
+        array(
+            'name'=>'date_created',
+            'header'=>'Submitted',
+            'value'=>'$data->date_created',
+        ),
+        // 'date_created',
+        
+        // array(
+        //     'name' => 'date_created',
+        //     'filter' => $this->widget('zii.widgets.jui.CJuiDatePicker', array(
+        //         'language'=>'',
+        //         'model'=>$leadModel, 
+        //         'attribute'=>'date_created', 
+        //         'htmlOptions' => array(
+        //         ),
+        //         'defaultOptions' => array(
+        //             'showOn' => 'focus', 
+        //             'dateFormat' => 'yy-mm-dd',
+        //             'showOtherMonths' => true,
+        //             'selectOtherMonths' => true,
+        //             'changeMonth' => true,
+        //             'changeYear' => true,
+        //             'showButtonPanel' => true,
+        //         )
+        //     ), 
+        //     true),
+        // ),
+
         // 'policy_holder_1_dateOfBirth',          // display the 'title' attribute
-        'policy_holder_1_email',          // display the 'title' attribute
+        // 'policy_holder_1_email',          // display the 'title' attribute
         // 'policy_holder_1_dayTimeTelephone',          // display the 'title' attribute
         array(
             'class'=>'CButtonColumn',
@@ -57,3 +93,6 @@
 
     </div>
 </div>
+
+
+
