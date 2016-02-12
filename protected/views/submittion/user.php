@@ -37,11 +37,11 @@
             'header'=>'Add account',
             'value'=>'$data->add_account',
         ),
-        array(
-            'name'=>'date_created',
-            'header'=>'Submitted',
-            'value'=>'$data->date_created',
-        ),
+        // array(
+        //     'name'=>'date_created',
+        //     'header'=>'Submitted',
+        //     'value'=>'$data->date_created',
+        // ),
         // 'date_created',
         
         // array(
