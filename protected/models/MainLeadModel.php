@@ -406,9 +406,7 @@ class MainLeadModel extends CActiveRecord
         // $criteria->compare('date(date_created)', date("Y-m-d",strtotime($this->date_created)));
         $criteria->compare('date_updated', $this->date_updated, true);
         $criteria->compare('reason_for_delay', $this->reason_for_delay, true);
-        
-
-
+        $criteria->order = "id DESC";
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
         ));
