@@ -88,6 +88,14 @@ Yii::app()->clientScript->registerCssFile('//code.jquery.com/ui/1.10.0/themes/ba
 Yii::app()->clientScript->registerCssFile($baseUrl . '/Spry2/widgets/selectvalidation/SpryValidationSelect.css');
 
 
+
+Yii::app()->clientScript->registerScript('forceTrigger', '
+    if(jQuery("#add_account").val() == "Flight_delays"){
+        jQuery("#add_account").trigger("change");
+    }
+', CClientScript::POS_READY);
+
+
 $flashCssCode = <<<EOL
 .success-flash-message{
     border: 1px solid green;
@@ -105,6 +113,12 @@ $flashCssCode = <<<EOL
 }
 EOL;
 Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
+
+if (isset($_GET['id'])) {
+    extract($_GET);
+}
+
+
 
 ?>
 
@@ -143,6 +157,11 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 
 
 <?php echo CHtml::beginForm(array('/submitForm'), 'post', array('id' => 'details', 'name' => "details")); ?>
+
+<?php if (isset($id)): ?>
+    <?php echo CHtml::hiddenField('id', @$id); ?>
+<?php endif ?>
+
 <?php if (Yii::app()->user->hasFlash("success")): ?>
     <div class='success-flash-message'>
         <?php echo Yii::app()->user->getFlash("success") ?>
@@ -170,7 +189,12 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">Closer:</td>
     <td valign="middle"><span id="sprytextfield11">
-    <input readonly="readonly" name="closer" type="text" id="closer" value="<?php echo $randomClientReferenceId.'-'.Yii::app()->user->name ?>"/>
+    <?php if (isset($_GET['closer'])): ?>
+        <input readonly="readonly" name="closer" type="text" id="closer" value="<?php echo $closer ?>"/>
+    <?php endif ?>
+    <?php if (!isset($_GET['closer'])): ?>
+        <input readonly="readonly" name="closer" type="text" id="closer" value="<?php echo $randomClientReferenceId.'-'.Yii::app()->user->name ?>"/>
+    <?php endif ?>
     <span class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
     <td valign="middle">&nbsp;</td>
@@ -179,83 +203,112 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">Title:</td>
     <td valign="middle"><span id="spry_title">
- <select name="title" class="fields" id="title" tabindex="1">
-     <option>--Select--</option>
-     <option value="Mr">Mr</option>
-     <option value="Mrs">Mrs</option>
-     <option value="Miss">Miss</option>
-     <option value="Ms">Ms</option>
-     <option value="Dr">Dr</option>
-     <option value="Other">Other</option>
- </select> 
- <span class="selectInvalidMsg">Please select a valid item.</span><span
+
+    <?php echo CHtml::dropDownList('title', @$policy_holder_1_title , array(
+            "Mr"=>"Mr",
+            "Mrs"=>"Mrs",
+            "Miss"=>"Miss",
+            "Ms"=>"Ms",
+            "Dr"=>"Dr",
+            "Other"=>"Other"
+    ), array('id'=>'title','tabindex'=>'1','prompt'=>'--Select--')); ?>
+    <span class="selectInvalidMsg">Please select a valid item.</span><span
                 class="selectRequiredMsg">Please select an item.</span></span>
     </td>
     <td valign="middle">Title:</td>
     <td valign="middle">
-        <select name="2_title" class="fields" id="2_title" tabindex="16">
-            <option value="">--Select--</option>
+
+    <?php echo CHtml::dropDownList('2_title', @$policy_holder_2_title , array(
+            "Mr"=>"Mr",
+            "Mrs"=>"Mrs",
+            "Miss"=>"Miss",
+            "Ms"=>"Ms",
+            "Dr"=>"Dr",
+            "Other"=>"Other"
+    ), array('id'=>'2_title','tabindex'=>'16','prompt'=>'--Select--','class'=>'fields')); ?>
+<!--         <select name="2_title" class="fields" id="2_title" tabindex="16">
+            <option value="<?php echo @$REPLACE_ME ?>">--Select--</option>
             <option value="Mr">Mr</option>
             <option value="Mrs">Mrs</option>
             <option value="Miss">Miss</option>
             <option value="Ms">Ms</option>
             <option value="Dr">Dr</option>
             <option value="Other">Other</option>
-        </select>
+        </select> -->
     </td>
 </tr>
 <tr>
     <td valign="middle">Forename:</td>
     <td valign="middle"><span id="spry_forename">
- <input name="forename" type="text" id="forename" tabindex="2" value=""/>
+    <input name="forename" type="text" id="forename" tabindex="2" value="<?php echo @$policy_holder_1_forename ?>"/>
  <span class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
     <td valign="middle">Forename:</td>
     <td valign="middle">
-        <input type="text" name="2_forename" id="2_forename" tabindex="17"/>
+        <input type="text" name="2_forename" id="2_forename" tabindex="17" value="<?php echo @$policy_holder_2_forename ?>" />
     </td>
 </tr>
 <tr>
     <td valign="middle">Surname:</td>
     <td valign="middle"><span id="spry_surname">
- <input name="surname" type="text" id="surname" tabindex="3" value=""/>
+ <input name="surname" type="text" id="surname" tabindex="3" value="<?php echo @$policy_holder_1_surname ?>"/>
  <span class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
     <td valign="middle">Surname:</td>
     <td valign="middle">
-        <input type="text" name="2_surname" id="2_surname" tabindex="18"/>
+        <input type="text" name="2_surname" id="2_surname" tabindex="18" value="<?php echo @$policy_holder_2_surname ?>" />
     </td>
 </tr>
 <tr>
     <td valign="middle">Date of Birth:</td>
     <td valign="middle"><span id="spry_dob">
- <input name="dob" type="text" id="dob" tabindex="4" value=""/>
- <span class="textfieldRequiredMsg">A value is required.</span><span
+    <?php if (!is_null(@$policy_holder_1_dateOfBirth)): ?>
+        <?php 
+            $dtContainer = date("Y-m-d", strtotime($policy_holder_1_dateOfBirth));
+         ?>
+        <input name="dob" type="text" id="dob" tabindex="4" value="<?php echo $dtContainer?>"/>
+    <?php endif ?>
+    <?php if (is_null(@$policy_holder_1_dateOfBirth)): ?>
+        <input name="dob" type="text" id="dob" tabindex="4" value=""/>
+    <?php endif ?>
+    
+    <span class="textfieldRequiredMsg">A value is required.</span><span
                 class="textfieldInvalidFormatMsg">Invalid format.</span></span>  (YYYY-MM-DD)
     </td>
     <td valign="middle">Date of Birth:</td>
     <td valign="middle"><span id="spry_2_dob">
- <input type="text" name="2_dob" id="2_dob" tabindex="19"/>
+
+    <?php if (!is_null(@$policy_holder_2_dateOfBirth)): ?>
+        <?php 
+            $dtContainer = date("Y-m-d", strtotime($policy_holder_2_dateOfBirth));
+         ?>
+        <input name="2_dob" type="text" id="2_dob" tabindex="19" value="<?php echo $dtContainer?>"/>
+    <?php endif ?>
+    <?php if (is_null(@$policy_holder_2_dateOfBirth)): ?>
+        <input name="2_dob" type="text" id="2_dob" tabindex="19" value=""/>
+    <?php endif ?>
+
+
  <span class="textfieldInvalidFormatMsg">Invalid format.</span></span>(YYYY-MM-DD)
     </td>
 </tr>
 <tr>
     <td valign="middle">E-mail:</td>
     <td valign="middle"><span id="spry_email">
- <input name="email" type="text" id="email" tabindex="5" value=""/>
+    <input name="email" type="text" id="email" tabindex="5" value="<?php echo @$policy_holder_1_email ?>"/>
  <span class="textfieldRequiredMsg">A value is required.</span><span
                 class="textfieldInvalidFormatMsg">Invalid format.</span></span>
     </td>
     <td valign="middle">E-mail:</td>
     <td valign="middle"><span id="spry_2_email">
- <input type="text" name="2_email" id="2_email" tabindex="19"/>
+    <input type="text" name="2_email" id="2_email" tabindex="19" value="<?php echo @$policy_holder_2_email ?>"/> 
  <span class="textfieldInvalidFormatMsg">Invalid format.</span></span>
     </td>
 </tr>
 <tr>
     <td valign="middle">Daytime Telephone:</td>
     <td valign="middle"><span id="sprytel_daytime">
- <input name="tel_daytime" type="text" id="tel_daytime" tabindex="6" value=""/>
+ <input name="tel_daytime" type="text" id="tel_daytime" tabindex="6" value="<?php echo @$policy_holder_1_dayTimeTelephone ?>"/>
  <span class="textfieldInvalidFormatMsg">Invalid format.</span><span
                 class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
@@ -267,7 +320,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         <br/>
     </td>
     <td valign="middle"><span id="spry_tel_evening">
- <input type="text" name="tel_evening" id="tel_evening" tabindex="7"/>
+    <input type="text" name="tel_evening" id="tel_evening" tabindex="7" value="<?php echo @$policy_holder_1_eveningTelephone ?>" />
  <span class="textfieldInvalidFormatMsg">Invalid format.</span><span
                 class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
@@ -277,7 +330,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">Mobile Telephone:</td>
     <td valign="middle"><span id="spry_tel_mobile">
- <input name="tel_mobile" type="text" id="tel_mobile" tabindex="8" value=""/>
+    <input name="tel_mobile" type="text" id="tel_mobile" tabindex="8" value="<?php echo @$policy_holder_1_mobileTelephone ?>"/>
  <span class="textfieldInvalidFormatMsg">Invalid format.</span><span
                 class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
@@ -293,23 +346,23 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">House Name/Number:</td>
     <td valign="middle">
-        <input name="search_string" type="text" id="search_string" tabindex="9" value=""/>
+        <input name="search_string" type="text" id="search_string" tabindex="9" value="<?php echo @$policy_holder_1_houseNumber ?>"/>
     </td>
     <td valign="middle">House Name/Number:</td>
     <td valign="middle">
-        <input type="text" name="2_search_string" id="2_search_string" tabindex="20"/>
+        <input type="text" name="2_search_string" id="2_search_string" tabindex="20" value="<?php echo @$policy_holder_2_houseNumber ?>"/>
     </td>
 </tr>
 <tr>
     <td valign="middle">Postcode</td>
     <td valign="middle"><span id="spry_postcode">
- <input name="add_postcode" type="text" style="width: 100px;" tabindex="10" value=""/> 
+    <input name="add_postcode" type="text" style="width: 100px;" tabindex="10" value="<?php echo @$policy_holder_1_postCode ?>"  /> 
  <span class="textfieldRequiredMsg"></span></span>  &nbsp;&nbsp;&nbsp;
         <button type="button" onclick="cp_obj_1.doHouseSearch()" tabindex="11" class="button">Find Address</button>
     </td>
     <td valign="middle">Postcode</td>
     <td valign="middle">
-        <input type="text" name="2_add_postcode" style="width: 100px;" tabindex="21"/> &nbsp;&nbsp;&nbsp;
+        <input type="text" name="2_add_postcode" style="width: 100px;" tabindex="21" value="<?php echo @$policy_holder_2_postCode ?>" /> &nbsp;&nbsp;&nbsp;
         <button type="button" onclick="cp_obj_2.doHouseSearch()" tabindex="22" class="button">Find Address</button>
     </td>
 </tr>
@@ -324,43 +377,43 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">House Name/Number:</td>
     <td valign="middle"><span id="spry_house">
- <input name="add_house" type="text" tabindex="12" value=""/> 
+ <input name="add_house" type="text" tabindex="12" value="<?php echo @$policy_holder_1_houseNumber ?>" /> 
  <span class="textfieldRequiredMsg">A value is required.</span></span>
     </td>
     <td valign="middle">House Name/Number:</td>
     <td valign="middle">
-        <input type="text" name="2_add_house" id="2_add_house" tabindex="23"/>
+        <input type="text" name="2_add_house" id="2_add_house" tabindex="23" value="<?php echo @$policy_holder_2_houseNumber ?>"/>
     </td>
 </tr>
 <tr>
     <td valign="middle">Street:</td>
     <td valign="middle">
-        <input name="add_street" type="text" id="add_street" tabindex="13" value=""/>
+        <input name="add_street" type="text" id="add_street" tabindex="13" value="<?php echo @$policy_holder_1_street ?>"/>
     </td>
     <td valign="middle">Street:</td>
     <td valign="middle">
-        <input type="text" name="2_add_street" id="2_add_street" tabindex="24"/>
+        <input type="text" name="2_add_street" id="2_add_street" tabindex="24"value="<?php echo @$policy_holder_2_street ?>"/>
     </td>
 </tr>
 <tr>
     <td valign="middle">Address 2:</td>
     <td valign="middle">
-        <input name="add_2" type="text" id="add_2" tabindex="14" value=""/>
+        <input name="add_2" type="text" id="add_2" tabindex="14" value="<?php echo @$policy_holder_1_address2 ?>"/>
     </td>
     <td valign="middle">Address 2:</td>
     <td valign="middle">
-        <input type="text" name="2_add_2" id="2_add_2" tabindex="25"/>
+        <input type="text" name="2_add_2" id="2_add_2" tabindex="25"  value="<?php echo @$policy_holder_2_address2 ?>"/>
     </td>
 </tr>
 <tr>
     <td valign="middle">Town:</td>
     <td valign="middle">
-        <input name="add_town" type="text" id="add_town" tabindex="15" value=""/>
+        <input name="add_town" type="text" id="add_town" tabindex="15" value="<?php echo @$policy_holder_1_town ?>"/>
         </p>
     </td>
     <td valign="middle">Town:</td>
     <td valign="middle">
-        <input type="text" name="2_add_town" id="2_add_town" tabindex="26"/>
+        <input type="text" name="2_add_town" id="2_add_town" tabindex="26" value="<?php echo @$policy_holder_2_town ?>"/>
     </td>
 </tr>
 <tr>
@@ -373,13 +426,31 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 </tr>
 <tr>
     <td valign="middle" align="center" colspan="4">Add Account:
-        <select name="add_account" class="fields" id="add_account">
-            <option selected="selected">None</option>
-            <option value="PBA" id="Packaged">Packaged Account</option>
-            <option value="PPI" id="PPI">PPI Account</option>
-            <option value="Flight_delays" id="flight_delays">Flight Delays</option>
-        </select>&nbsp;
-        <input type="checkbox" name="wants_cc" id="wants_cc" value="1"/> Include Free PPI assesment
+        <?php echo CHtml::dropDownList('add_account', @$add_account, array(
+                "PBA"=>"Packaged Account",
+                "PPI"=>"PPI Account",
+                "Flight_delays"=>"Flight Delays",
+        ), array(
+            'class'=>'fields',
+            'id'=>'add_account',
+            'options'=>array(
+                "PBA"=>array('label'=>"Packaged Account","id"=>"Packaged"),
+                "PPI"=>array('label'=>"PPI Account","id"=>"PPI"),
+                "Flight_delays"=>array('label'=>"Flight Delays","id"=>"flight_delays"),
+            ),
+
+        )); ?>
+        <?php if (is_null(@$includeFreePPIAssesment) || empty(@$includeFreePPIAssesment)): ?>
+            <input type="checkbox" name="wants_cc" id="wants_cc" value="1"/> Include Free PPI assesment
+        <?php endif ?>
+        <?php if (!is_null(@$includeFreePPIAssesment) && !empty(@$includeFreePPIAssesment) && @$includeFreePPIAssesment == 'Yes'): ?>
+            <input checked='checked' type="checkbox" name="wants_cc" id="wants_cc" value="1"/> Include Free PPI assesment
+        <?php endif ?>
+        <?php if (!is_null(@$includeFreePPIAssesment) && !empty(@$includeFreePPIAssesment) && @$includeFreePPIAssesment == 'No'): ?>
+            <input type="checkbox" name="wants_cc" id="wants_cc" value="1"/> Include Free PPI assesment
+        <?php endif ?>
+        
+
     </td>
 </tr>
 </table>
@@ -405,22 +476,22 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         <tr>
             <td valign="middle">Over 3 Hours Delay:</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('over3_hours', '', array("Yes" => "Yes", "No" => "No")); ?>
+                <?php echo CHtml::dropDownList('over3_hours', @$over_3_hours_delay, array("Yes" => "Yes", "No" => "No")); ?>
             </td>
             <td valign="middle">Within last 6 Years</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('within_last_6_years', '', array("Yes" => "Yes", "No" => "No")); ?>
+                <?php echo CHtml::dropDownList('within_last_6_years', @$within_last_6_years , array("Yes" => "Yes", "No" => "No")); ?>
             </td>
         </tr>
 
         <tr>
             <td valign="middle">Technical/Airline Fault :</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('techinal_airline_fault', '', array("Yes" => "Yes", "No" => "No")); ?>
+                <?php echo CHtml::dropDownList('techinal_airline_fault', @$techinal_airline_fault  , array("Yes" => "Yes", "No" => "No")); ?>
             </td>
             <td valign="middle">Flew with Airlines Agreed</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('flew_with_airlines_agreed', '', array(
+                <?php echo CHtml::dropDownList('flew_with_airlines_agreed', @$flew_with_airlines_agreed, array(
                     "British Airways" => "British Airways",
                     "Thomson" => "Thomson",
                     "Thomas Cook" => "Thomas Cook",
@@ -438,7 +509,7 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         <tr>
             <td valign="middle">Reason for delay :</td>
             <td valign="middle">
-                <?php echo CHtml::textArea('reason_for_delay', '',array('style'=>'margin: 0px; width: 330px; height: 86px;')); ?>
+                <?php echo CHtml::textArea('reason_for_delay', @$reason_for_delay,array('style'=>'margin: 0px; width: 330px; height: 86px;')); ?>
             </td>
             <td valign="middle"></td>
             <td valign="middle">
@@ -448,41 +519,31 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
         <tr>
             <td valign="middle">Ever made any claim before :</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('ever_made_claim_before', '', array("Yes" => "Yes", "No" => "No")); ?>
+                <?php echo CHtml::dropDownList('ever_made_claim_before', @$ever_made_claim_before, array("Yes" => "Yes", "No" => "No")); ?>
             </td>
             <td valign="middle">Happy to Claim :</td>
             <td valign="middle">
-                <?php echo CHtml::dropDownList('happy_to_claim', '', array("Yes" => "Yes", "No" => "No")); ?>
+                <?php echo CHtml::dropDownList('happy_to_claim', @$happy_to_claim, array("Yes" => "Yes", "No" => "No")); ?>
             </td>
         </tr>
         <tr>
             <td valign="middle">Time to talk :</td>
             <td valign="middle">
                 <?php
-                $hoursOption = range(1, 24);
-
-                array_fill_keys(array_values($hoursOption), $hoursOption);
-                $minuteOption = range(1, 60);
-                array_fill_keys(array_values($minuteOption), $minuteOption);
+                    $hoursOption = range(1, 24);
+                    array_fill_keys(array_values($hoursOption), $hoursOption);
+                    $minuteOption = range(1, 60);
+                    array_fill_keys(array_values($minuteOption), $minuteOption);
+                    $selectedHours = '';
+                    $selectedMinutes = '';
+                    if (isset($time_to_talk)) {
+                        $tempArr=  explode(":", $time_to_talk);
+                        $selectedHours = $tempArr[0];
+                        $selectedMinutes = $tempArr[1];
+                    }
                 ?>
-                <?php echo CHtml::dropDownList('time_to_talk_hrs', '', $hoursOption, array('prompt' => 'HH')); ?>
-                <?php echo CHtml::dropDownList('time_to_talk_mins', '', $minuteOption, array('prompt' => 'MM')); ?>
-            </td>
-            <td valign="middle">Flew with Airlines Agreed</td>
-            <td valign="middle">
-                <?php echo CHtml::dropDownList('flew_with_airlines_agreed', '', array(
-                    "British Airways" => "British Airways",
-                    "Thomson" => "Thomson",
-                    "Thomas Cook" => "Thomas Cook",
-                    "Air France" => "Air France",
-                    "Flybe" => "Flybe",
-                    "KLM" => "KLM",
-                    "Monarch" => "Monarch",
-                    "Virgin Atlantic" => "Virgin Atlantic",
-                    "Jet2" => "Jet2",
-                    "EasyJet" => "EasyJet",
-                    "RyanAir" => "RyanAir"
-                )); ?>
+                <?php echo CHtml::dropDownList('time_to_talk_hrs', $selectedHours, $hoursOption, array('prompt' => 'HH')); ?>
+                <?php echo CHtml::dropDownList('time_to_talk_mins', $selectedMinutes, $minuteOption, array('prompt' => 'MM')); ?>
             </td>
         </tr>
 
@@ -516,37 +577,39 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">Type:</td>
     <td valign="middle"><span id="spryselect2">
-                     <select name="PPI-type" class="fields" id="PPI-type">
-                         <option value="Loan" id="PPI">Loan</option>
-                         <option value="Mortgage" id="PPI">Mortgage</option>
-                         <option value="Credit Card" id="PPI">Credit Card</option>
-                         <option value="Store Card" id="PPI">Store Card</option>
-                         <option value="Hire Purchase" id="PPI">Hire Purchase</option>
-                         <option value="Overdraft" id="PPI">Overdraft</option>
-                         <option value="Catalogue" id="PPI">Catalogue</option>
-                         <option value="MPPI" id="PPI">MPPI</option>
-                         <option value="Motor Warranty Insurance" id="PPI">Motor Warranty Insurance</option>
-                         <option value="Other" id="PPI">Other</option>
-                     </select> 
-                     <span class="selectInvalidMsg">Please select a valid item.</span><span class="selectRequiredMsg">Please select an item.</span></span>
+
+    <?php echo CHtml::dropDownList('PPI-type', @$ppi_account_details_type, array(
+                "Loan"=>"Loan",
+                "Mortgage"=>"Mortgage",
+                "Credit Card"=>"Credit Card",
+                "Store Card"=>"Store Card",
+                "Hire Purchase"=>"Hire Purchase",
+                "Overdraft"=>"Overdraft",
+                "Catalogue"=>"Catalogue",
+                "MPPI"=>"MPPI",
+                "Motor Warranty Insurance"=>"Motor Warranty Insurance",
+                "Other"=>"Other",
+    ), array('id'=>'PPI-type','class'=>'fields')); ?>
+     <span class="selectInvalidMsg">Please select a valid item.</span><span class="selectRequiredMsg">Please select an item.</span></span>
         *
     </td>
     <td valign="middle">Credit Provider:</td>
     <td valign="middle"><span id="sprytextfield4">
-                    <input type="text" name="PPI-provider" id="PPI-provider" autocomplete="off"/>
-                    <span class="textfieldRequiredMsg">A value is required.</span></span>
+        <?php echo CHtml::textField('PPI-provider', @$ppi_account_details_credit_provider, array('id'=>'PPI-provider','autocomplete'=>'off')); ?>
+        <span class="textfieldRequiredMsg">A value is required.</span></span>
         *
     </td>
 </tr>
 <tr>
     <td valign="middle">Account Number:</td>
     <td valign="middle">
-        <input type="text" name="PPI-account_no" id="PPI-account_no"/>
+        <?php echo CHtml::textField('PPI-account_no', @$ppi_account_details_account_number, array('id'=>"PPI-account_no")); ?>
     </td>
     <td valign="middle">Job Title:</td>
-    <td valign="middle"><span id="sprytextfield6">
-                     <input type="text" name="PPI-job_title" id="PPI-job_title"/>
-                     </span>
+    <td valign="middle">
+        <span id="sprytextfield6">
+            <?php echo CHtml::textField('PPI-job_title', @$ppi_account_details_job_title, array('id'=>'PPI-job_title')); ?>
+        </span>
     </td>
 </tr>
 <tr>
@@ -596,211 +659,165 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td>Date Taken:</td>
     <td>
-        <select name="ppi_day" id="ppi_day">
-            <option value="DD">DD</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-        </select>
+        <?php 
+            $dateRange = array();
+            $monthRange = array();
+            $yearRange = array();
+            foreach (range(1, 31) as $key => $value) {
+                $dateRange[$value.''] = $value;
+            }
+            foreach (range(1, 12) as $key => $value) {
+                $monthRange[$value.''] = $value;
+            }
+            foreach (range(1970, 2011) as $key => $value) {
+                $yearRange[$value.''] = $value;
+            }
+
+
+            $dateTakenDay  = '';
+            $dateTakenMonth  = '';
+            $dateTakenYear  = '';
+
+            if (isset($ppi_specific_date_taken)) {
+                $dateObj = strtotime($ppi_specific_date_taken);
+                $dateTakenDay = (int)date("d",$dateObj);
+                $dateTakenMonth = (int)date("m",$dateObj);
+                $dateTakenYear = (int)date("Y",$dateObj);
+            }
+
+        ?>
+        <?php echo CHtml::dropDownList('ppi_day', @$dateTakenDay, $dateRange, array('id'=>'ppi_day','prompt'=>'DD')); ?>
         /
-        <select name="ppi_month" id="ppi_month">
-            <option value="MM">MM</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-        </select>
+        <?php echo CHtml::dropDownList('ppi_month', @$dateTakenMonth, $monthRange, array('id'=>'ppi_month','prompt'=>'MM')); ?>
         / *
-        <select name="ppi_year" id="ppi_year">
-            <option value="YYYY">YYYY</option>
-            <option value="1970">1970</option>
-            <option value="1971">1971</option>
-            <option value="1972">1972</option>
-            <option value="1973">1973</option>
-            <option value="1974">1974</option>
-            <option value="1975">1975</option>
-            <option value="1976">1976</option>
-            <option value="1977">1977</option>
-            <option value="1978">1978</option>
-            <option value="1979">1979</option>
-            <option value="1980">1980</option>
-            <option value="1981">1981</option>
-            <option value="1982">1982</option>
-            <option value="1983">1983</option>
-            <option value="1984">1984</option>
-            <option value="1985">1985</option>
-            <option value="1986">1986</option>
-            <option value="1987">1987</option>
-            <option value="1988">1988</option>
-            <option value="1989">1989</option>
-            <option value="1990">1990</option>
-            <option value="1991">1991</option>
-            <option value="1992">1992</option>
-            <option value="1993">1993</option>
-            <option value="1994">1994</option>
-            <option value="1995">1995</option>
-            <option value="1996">1996</option>
-            <option value="1997">1997</option>
-            <option value="1998">1998</option>
-            <option value="1999">1999</option>
-            <option value="2000">2000</option>
-            <option value="2001">2001</option>
-            <option value="2002">2002</option>
-            <option value="2003">2003</option>
-            <option value="2004">2004</option>
-            <option value="2005">2005</option>
-            <option value="2006">2006</option>
-            <option value="2007">2007</option>
-            <option value="2008">2008</option>
-            <option value="2009">2009</option>
-            <option value="2010">2010</option>
-            <option value="2011">2011</option>
-        </select>
+        <?php echo CHtml::dropDownList('ppi_year', @$dateTakenYear, $yearRange, array('id'=>'ppi_year','prompt'=>'YYYY')); ?>
     </td>
     <td>
         <p>Where Applied:</p>
     </td>
     <td>
-        <select name="ppi_applied" id="ppi_applied">
-            <option value="Unknown">Unknown</option>
-            <option value="Meeting">Meeting</option>
-            <option value="Phone">Phone</option>
-            <option value="Internet">Internet</option>
-            <option value="Post">Post</option>
-        </select>
+        <?php echo CHtml::dropDownList('ppi_applied', @$ppi_specific_where_applied, array(
+                "Unknown"=>"Unknown",
+                "Meeting"=>"Meeting",
+                "Phone"=>"Phone",
+                "Internet"=>"Internet",
+                "Post"=>"Post",
+        ), array('id'=>'ppi_applied')); ?>
     </td>
 </tr>
 <tr>
     <td>Employment Status Then:</td>
     <td>
-        <select name="emp_then" id="emp_then">
-            <option value="" selected>--Select One--</option>
-            <option value="Employed">Employed</option>
-            <option value="Self Employed">Self Employed</option>
-            <option value="Company Director">Company Director</option>
-            <option value="Employed Part Time">Employed Part Time</option>
-            <option value="Unemployed">Unemployed</option>
-            <option value="Retired">Retired</option>
-            <option value="Student">Student</option>
-        </select>
+        <?php echo CHtml::dropDownList('emp_then', @$ppi_specific_employment_status_then, array(
+            "Employed"=>"Employed",
+            "Self Employed"=>"Self Employed",
+            "Company Director"=>"Company Director",
+            "Employed Part Time"=>"Employed Part Time",
+            "Unemployed"=>"Unemployed",
+            "Retired"=>"Retired",
+            "Student"=>"Student",
+        ), array('id'=>'emp_then','prompt'=>'--Select One--')); ?>
     </td>
     <td>Employment Status Now:</td>
     <td>
-        <select name="emp_now" id="emp_now">
-            <option value="" selected>--Select One--</option>
-            <option value="Employed">Employed</option>
-            <option value="Self Employed">Self Employed</option>
-            <option value="Company Director">Company Director</option>
-            <option value="Employed Part Time">Employed Part Time</option>
-            <option value="Unemployed">Unemployed</option>
-            <option value="Retired">Retired</option>
-            <option value="Student">Student</option>
-        </select>
+        <?php echo CHtml::dropDownList('emp_now', @$ppi_specific_employment_status_now, array(
+            "Employed"=>"Employed",
+            "Self Employed"=>"Self Employed",
+            "Company Director"=>"Company Director",
+            "Employed Part Time"=>"Employed Part Time",
+            "Unemployed"=>"Unemployed",
+            "Retired"=>"Retired",
+            "Student"=>"Student"
+        ), array('id'=>'emp_now','prompt'=>'--Select One--')); ?>
     </td>
 </tr>
 <tr>
+    <?php 
+        $missellingArr = array();
+        if ((@$ppi_specific_misselling_reasons)) {
+            $missellingArr = explode("|",@$ppi_specific_misselling_reasons);
+        }
+        $missellingArr = array_combine($missellingArr, $missellingArr);
+
+    ?>
     <td valign="top">Misselling Reasons:</td>
     <td valign="top">
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="1"/> 1. Felt Coerced / Pressured
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Felt Coerced / Pressured']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'1')); ?>
+        1. Felt Coerced / Pressured
         <br/>
     </td>
     <td valign="top">&nbsp;</td>
     <td valign="top">
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="8"/> 8. Insufficient term
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Insufficient term']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'8')); ?>
+        8. Insufficient term 
         <br/>
     </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="2"/> 2. Didn't know there was PPI
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr["Didn't know there was PPI"]) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'2')); ?>
+        2. Didn't know there was PPI
     </td>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="9"/> 9. Medical Condition
-    </td>
-</tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="3"/> 3. Told it was complusory
-    </td>
-    <td>&nbsp;</td>
-    <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="10"/> 10. Previously Offered insufficient
-        refund
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Medical Condition']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'9')); ?>
+        9. Medical Condition
     </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="4"/> 4. Told it would assist credit
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Told it was complusory']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'3')); ?>
+        3. Told it was complusory
     </td>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="11"/> 11. PPI Cost wasnt quoted
-    </td>
-</tr>
-<tr>
-    <td>&nbsp;</td>
-    <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="5"/> 5. Had alternative cover
-    </td>
-    <td>&nbsp;</td>
-    <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="12"/> 12. No T&amp;C explanation
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Previously Offered insufficient refund']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'10')); ?>
+        10. Previously Offered insufficient refund
     </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="6"/> 6. Unqualified salesperson
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Told it would assist credit']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'4')); ?>
+        4. Told it would assist credit
     </td>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="13"/> 13. Over 70 when policy started
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['PPI Cost wasnt quoted']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'11')); ?>
+        11. PPI Cost wasnt quoted
     </td>
 </tr>
 <tr>
     <td>&nbsp;</td>
     <td>
-        <input name="ppi_reason[]" type="checkbox" id="ppi_reason[]" value="7"/> 7. Insufficient cover
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Had alternative cover']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'5')); ?>
+        5. Had alternative cover
+    </td>
+    <td>&nbsp;</td>
+    <td>
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['No T&amp;C explanation']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'12')); ?>
+        12. No T&amp;C explanation
+    </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Unqualified salesperson']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'6')); ?>
+        6. Unqualified salesperson
+    </td>
+    <td>&nbsp;</td>
+    <td>
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Over 70 when policy started']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'13')); ?>
+        13. Over 70 when policy started
+    </td>
+</tr>
+<tr>
+    <td>&nbsp;</td>
+    <td>
+        <?php echo CHtml::checkBox('ppi_reason[]', ( is_null(@$missellingArr['Insufficient cover']) ? false:true ) , array('id'=>'ppi_reason[]','value'=>'7')); ?>
+        7. Insufficient cover
     </td>
     <td>&nbsp;</td>
     <td>&nbsp;</td>
@@ -810,12 +827,12 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <td>&nbsp;</td>
     <td>Claimed:</td>
     <td>
-        <select name="ppi_claimed" id="ppi_claimed">
-            <option value="Dont Know">Dont Know</option>
-            <option value="Yes">Yes</option>
-            <option value="No">No</option>
-            <option value="Declined">Declined</option>
-        </select>
+        <?php echo CHtml::dropDownList('ppi_claimed', @$ppi_specific_claimed, array(
+            "Dont Know"=>"Dont Know",
+            "Yes"=>"Yes",
+            "No"=>"No",
+            "Declined"=>"Declined"
+        ), array('id'=>'ppi_claimed')); ?>
     </td>
 </tr>
 <tr>
@@ -852,19 +869,19 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     </td>
     <td valign="middle">Credit Provider:</td>
     <td valign="middle"><span id="sprytextfield4">
- <input type="text" name="PBA-provider" id="PBA-provider" autocomplete="off"/>
- <span class="textfieldRequiredMsg">A value is required.</span></span>
+        <?php echo CHtml::textField('PBA-provider', @$pba_account_details_type, array('id'=>'PBA-provider','autocomplete'=>'off')); ?>
+        <span class="textfieldRequiredMsg">A value is required.</span></span>
         *
     </td>
 </tr>
 <tr>
     <td valign="middle">Account Number:</td>
     <td valign="middle">
-        <input type="text" name="PBA-account_no" id="PBA-account_no"/>
+        <?php echo CHtml::textField('PBA-account_no', @$pba_account_details_account_number, array('id'=>'PBA-account_no','autocomplete'=>'off')); ?>
     </td>
     <td valign="middle">Job Title:</td>
     <td valign="middle"><span id="sprytextfield6">
- <input type="text" name="PBA-job_title" id="PBA-job_title"/>
+        <?php echo CHtml::textField('PBA-job_title', @$pba_account_details_job_title, array('id'=>'PBA-job_title','autocomplete'=>'off')); ?>
  </span>
     </td>
 </tr>
@@ -915,14 +932,21 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td width="15%" valign="middle">Monthly Charge:</td>
     <td width="35%" valign="middle">£
-        <input name="pba_charge" type="text" id="pba_charge"/> *
+        <?php echo CHtml::textField('pba_charge', @$pba_specific_monthly_charge, array('id'=>'pba_charge','autocomplete'=>'off')); ?>
     </td>
     <td width="15%" valign="middle">Time on Account</td>
     <td width="35%" valign="middle">
         <label for="pba_years"></label>
-        <input name="pba_years" type="text" id="pba_years" size="4" maxlength="2"/> Years
-        <input name="pba_months" type="text" id="pba_months" size="4" maxlength="2"/> Months *
-        <input name="pba_closed[]" type="checkbox" id="pba_closed[]" value="1"/> Account Closed
+        <?php echo CHtml::textField('pba_years', @$pba_specific_time_on_account_years, array('id'=>'pba_years','size'=>'4','maxlength'=>'2')); ?> 
+        Years
+        <?php echo CHtml::textField('pba_months', @$pba_specific_time_on_account_years, array('id'=>'pba_months','size'=>'4','maxlength'=>'2')); ?>
+        Months *
+        <?php if (is_null(@$pba_specific_account_closed)): ?>
+            <input name="pba_closed[]" type="checkbox" id="pba_closed[]" value="1"/> Account Closed
+        <?php endif ?>
+        <?php if (!is_null(@$pba_specific_account_closed) && $pba_specific_account_closed == '1'): ?>
+            <input checked="checked" name="pba_closed[]" type="checkbox" id="pba_closed[]" value="1"/> Account Closed
+        <?php endif ?>
         <br/>
     </td>
 </tr>
@@ -931,166 +955,176 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <td valign="middle">&nbsp;</td>
     <td valign="middle">PBA still active?</td>
     <td valign="middle">
-        <input type="radio" name="pba_open" value="Y"/> Yes
-        <input type="radio" name="pba_open" value="N" checked="checked"/> No
+        <?php echo CHtml::radioButtonList('pba_open', @$pba_specific_pba_still_active, array(
+            'Y'=>'Yes',
+            'N'=>'No'
+        ), array()); ?>
         <br/>
-        <textarea name="ope_specific" id="ope_specific" cols="45" rows="5"
-                  placeholder="e.g. If this is still open explain why and advise the client to close it ASAP."
-                  style="display:none;"></textarea>
+        <?php echo CHtml::textArea('ope_specific', @$pba_specific_pba_still_active_specify, array(
+                'id'=>'ope_specific',
+                'cols'=>'45',
+                'rows'=>'5',
+                'placeholder'=>"e.g. If this is still open explain why and advise the client to close it ASAP.",
+                'style'=>"display:none;",
+            )); ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">Know about charge:</td>
     <td valign="middle">
-        <input type="radio" name="pba_notice" value="Y"/> Yes
-        <input type="radio" name="pba_notice" value="N" checked="checked"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_notice', 
+                @$pba_specific_know_about_charge, 
+                array(
+                        "Y"=>"Yes",
+                        "N"=>"No",
+                    ), 
+                array()
+            ); 
+        ?>
         <br/>
-        <textarea name="ntc_specific" id="ntc_specific" cols="45" rows="5"
-                  placeholder="e.g. When did they notice the fees and what did the customer beleive this charge was for?"
-                  style="display:none;"></textarea>
+        <?php echo CHtml::textArea(
+            'ntc_specific', 
+            @$pba_specific_know_about_charge_specify, 
+            array(
+                'cols'=>'45',
+                'rows'=>'5',
+                'placeholder'=>"e.g. When did they notice the fees and what did the customer beleive this charge was for?",
+                'style'=>"display:none;"
+            )
+        ); 
+        ?>
     </td>
     <td valign="middle">From</td>
     <td valign="middle">
-        <select name="pba_day" id="pba_day">
-            <option value="DD">DD</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="13">13</option>
-            <option value="14">14</option>
-            <option value="15">15</option>
-            <option value="16">16</option>
-            <option value="17">17</option>
-            <option value="18">18</option>
-            <option value="19">19</option>
-            <option value="20">20</option>
-            <option value="21">21</option>
-            <option value="22">22</option>
-            <option value="23">23</option>
-            <option value="24">24</option>
-            <option value="25">25</option>
-            <option value="26">26</option>
-            <option value="27">27</option>
-            <option value="28">28</option>
-            <option value="29">29</option>
-            <option value="30">30</option>
-            <option value="31">31</option>
-        </select>
+        <?php
+
+            $pba_specific_from_date = "";
+            $pba_specific_from_month = "";
+            $pba_specific_from_year = "";
+            if (  @$pba_specific_from ) {
+                $pba_specific_from_date = (int) date("d",strtotime($pba_specific_from));
+                $pba_specific_from_month = (int) date("m",strtotime($pba_specific_from));
+                $pba_specific_from_year = (int) date("Y",strtotime($pba_specific_from));
+            }
+        ?>
+        <?php 
+            echo CHtml::dropDownList(
+                    'pba_day', 
+                    $pba_specific_from_date,
+                    $dateRange, 
+                    array('id'=>'pba_day','prompt'=>'DD')
+                ); 
+        ?>
         /
-        <select name="pba_month" id="pba_month">
-            <option value="MM">MM</option>
-            <option value="01">01</option>
-            <option value="02">02</option>
-            <option value="03">03</option>
-            <option value="04">04</option>
-            <option value="05">05</option>
-            <option value="06">06</option>
-            <option value="07">07</option>
-            <option value="08">08</option>
-            <option value="09">09</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-        </select>
+        <?php 
+            echo CHtml::dropDownList(
+                    'pba_month', 
+                    $pba_specific_from_month,
+                    $monthRange,
+                    array('id'=>'pba_month','prompt'=>'MM')
+                ); 
+        ?>
         / *
-        <select name="pba_year" id="pba_year">
-            <option value="YYYY">YYYY</option>
-            <option value="1970">1970</option>
-            <option value="1971">1971</option>
-            <option value="1972">1972</option>
-            <option value="1973">1973</option>
-            <option value="1974">1974</option>
-            <option value="1975">1975</option>
-            <option value="1976">1976</option>
-            <option value="1977">1977</option>
-            <option value="1978">1978</option>
-            <option value="1979">1979</option>
-            <option value="1980">1980</option>
-            <option value="1981">1981</option>
-            <option value="1982">1982</option>
-            <option value="1983">1983</option>
-            <option value="1984">1984</option>
-            <option value="1985">1985</option>
-            <option value="1986">1986</option>
-            <option value="1987">1987</option>
-            <option value="1988">1988</option>
-            <option value="1989">1989</option>
-            <option value="1990">1990</option>
-            <option value="1991">1991</option>
-            <option value="1992">1992</option>
-            <option value="1993">1993</option>
-            <option value="1994">1994</option>
-            <option value="1995">1995</option>
-            <option value="1996">1996</option>
-            <option value="1997">1997</option>
-            <option value="1998">1998</option>
-            <option value="1999">1999</option>
-            <option value="2000">2000</option>
-            <option value="2001">2001</option>
-            <option value="2002">2002</option>
-            <option value="2003">2003</option>
-            <option value="2004">2004</option>
-            <option value="2005">2005</option>
-            <option value="2006">2006</option>
-            <option value="2007">2007</option>
-            <option value="2008">2008</option>
-            <option value="2009">2009</option>
-            <option value="2010">2010</option>
-            <option value="2011">2011</option>
-            <option value="2012">2012</option>
-            <option value="2013">2013</option>
-            <option value="2014">2014</option>
-            <option value="2015">2015</option>
-            <option value="2016">2016</option>
-        </select>
+        <?php 
+            echo CHtml::dropDownList(
+                    'pba_year', 
+                    $pba_specific_from_year,
+                    $yearRange,
+                    array('id'=>'pba_year','prompt'=>'YYYY')
+                ); 
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">Advised to take:</td>
     <td valign="middle">
-        <input type="radio" name="pba_advice" value="Y"/> Yes
-        <input type="radio" name="pba_advice" value="N"/> No
-        <input type="radio" name="pba_advice" value="U" checked="checked"/> Don't Know
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_advice', 
+                is_null(@$pba_specific_advise_to_take) ? 'U':$pba_specific_advise_to_take,
+                array(
+                        'Y'=>'Yes',
+                        'N'=>'No',
+                        'U'=>"Don't Know",
+                    ), 
+                array()
+            ); 
+        ?>
         <br/>
-        <textarea name="adv_specific" id="adv_specific" cols="45" rows="5" placeholder="e.g. What was the advice given?"
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'adv_specific', 
+                @$pba_specific_advised_to_take_specify, 
+                array(
+                    'id'=>'adv_specific',
+                    'rows'=>'5',
+                    'cols'=>'45',
+                    'placeholder'=>'e.g. What was the advice given?',
+                    'style'=>'display:none',
+                )
+            ); 
+        ?>
     </td>
     <td valign="middle">Where Taken:</td>
     <td valign="middle">
-        <select name="pba_how" class="fields" id="pba_how">
-            <option value="Meeting" selected="selected">Meeting</option>
-            <option value="Phone">Phone</option>
-            <option value="Internet">Internet</option>
-            <option value="Post">Post</option>
-            <option value="Leaflet">Leaflet</option>
-            <option value="Counter">Counter</option>
-            <option value="Cant remember">Cant remember</option>
-        </select>
+        <?php 
+            echo CHtml::dropDownList(
+                'pba_how', 
+                @$pba_specific_where_taken, 
+                array(
+                        "Meeting"=>"Meeting",
+                        "Phone"=>"Phone",
+                        "Internet"=>"Internet",
+                        "Post"=>"Post",
+                        "Leaflet"=>"Leaflet",
+                        "Counter"=>"Counter",
+                        "Cant remember"=>"Cant remember"
+                    ), 
+                array(
+                        'id'=>'pba_how',
+                        'class'=>'fields',
+                    )
+            ); 
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">Had a free account:</td>
     <td valign="middle">
-        <input type="radio" name="pba_free" value="Y"/> Yes
-        <input type="radio" name="pba_free" value="N" checked="checked"/> No
+        <?php echo CHtml::radioButtonList('pba_free', @$pba_specific_had_free_account, array(
+                "Y"=>"Yes",
+                "N"=>"No",
+        ), array()); ?>
     </td>
     <td valign="middle">Held another PBA:</td>
     <td valign="middle">
-        <input type="radio" name="pba_others" value="Y"/> Yes
-        <input type="radio" name="pba_others" value="N" checked="checked"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_others', 
+                @$pba_specific_held_another_PBA, 
+                array(
+                        "Y"=>"Yes",
+                        "N"=>"No",
+                    ), 
+                array()
+            );
+        ?>
         <br/>
-        <textarea name="othacc_specific" id="othacc_specific" cols="45" rows="5"
-                  placeholder="e.g. Give details of any other accounts the customer has."
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'othacc_specific', 
+                @$pba_specific_held_another_PBA_specify,
+                array(
+                    'id'=>'othacc_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. Give details of any other accounts the customer has.",
+                    'style'=>"display:none;",
+                )
+            ); 
+        ?>
     </td>
 </tr>
 <tr>
@@ -1100,156 +1134,271 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <td valign="middle">&nbsp;</td>
 </tr>
 <tr>
+
+    <?php 
+        $accountBenefitsArr = array();
+        $accountBenefitsReasonArr = array();
+        if (@$pba_specific_account_benefits) {
+            $accountBenefitsArr = explode("|", @$pba_specific_account_benefits);
+        }
+        if (@$pba_specific_account_benefits_reason) {
+            $accountBenefitsReasonArr = explode("|", @$pba_specific_account_benefits_reason);
+        }
+        $accountBenefitsArr = array_combine($accountBenefitsArr, $accountBenefitsArr);
+        $accountBenefitsReasonArr = array_combine($accountBenefitsReasonArr, $accountBenefitsReasonArr);
+    ?>
+
     <td valign="middle">Account Benefits:</td>
     <td valign="middle">
-        <input name="pba_benefits[]" type="checkbox" id="pba_benefits[]" value="1"/> 1. RAC / AA / Breakdown Cover
+        <?php echo CHtml::checkBox('pba_benefits[]', ( is_null(@$accountBenefitsArr['RAC / AA / Breakdown Cover']) ? false:true ) , array('id'=>'pba_benefits[]','value'=>'1')); ?>
+        1. RAC / AA / Breakdown Cover
     </td>
     <td valign="middle">Mis-Sold Reason:</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="1"/> 1. Wasn't informed of alternative free
-        account. *
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr["Wasn't informed of alternative free account"]) ? false:true ) , array('id'=>'pba_reason[]','value'=>'1')); ?>
+        1. RAC / AA / Breakdown Cover
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits[]" type="checkbox" id="pba_benefits[]" value="2"/> 2. Mobile Cover
+        <?php echo CHtml::checkBox('pba_benefits[]', ( is_null(@$accountBenefitsArr['Mobile Cover']) ? false:true ) , array('id'=>'pba_benefits[]','value'=>'2')); ?>
+        2. Mobile Cover
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="2"/> 2. Told they had to have it
-    </td>
-</tr>
-<tr>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_benefits[]" type="checkbox" id="pba_benefits[]" value="3"/> 3. Travel Insurance
-    </td>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="3"/> 3. Too old for the insurance
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Told they had to have it']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'2')); ?>
+        2. Told they had to have it
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits[]" type="checkbox" id="pba_benefits[]" value="4"/> 4. Overdraft
+       <?php echo CHtml::checkBox('pba_benefits[]', ( is_null(@$accountBenefitsArr['Travel Insurance']) ? false:true ) , array('id'=>'pba_benefits[]','value'=>'3')); ?>
+        3. Travel Insurance
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason4" value="4"/> 4. Misled into taking the account
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Too old for the insurance']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'3')); ?>
+        3. Too old for the insurance
+    </td>
+</tr>
+<tr>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+       <?php echo CHtml::checkBox('pba_benefits[]', ( is_null(@$accountBenefitsArr['Overdraft']) ? false:true ) , array('id'=>'pba_benefits[]','value'=>'4')); ?>
+       4. Overdraft
+    </td>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Misled into taking the account']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'4')); ?>
+        4. Misled into taking the account
         <br/>
-        <textarea name="ml_specific" id="ml_specific" cols="45" rows="5"
-                  placeholder="e.g. they were told that taking the account would improve thier chances of an overdraft later on."
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'ml_specific', 
+                @$ml_specific, 
+                array(
+                    'id'=>'ml_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. they were told that taking the account would improve thier chances of an overdraft later on.",
+                    'style'=>'display:none',
+                )
+        ); 
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits[]" type="checkbox" id="pba_benefits[]" value="5"/> 5. Home Emergency Cover
+       <?php echo CHtml::checkBox('pba_benefits[]', ( is_null(@$accountBenefitsArr['Home Emergency Cover']) ? false:true ) , array('id'=>'pba_benefits[]','value'=>'5')); ?>
+        5. Home Emergency Cover
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="5"/> 5. Hiked the price and didn't tell them
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr["Hiked the price and didn't tell them"]) ? false:true ) , array('id'=>'pba_reason[]','value'=>'5')); ?>
+        5. Hiked the price and didn't tell them
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_othben" type="checkbox" id="pba_othben" value="Y"/> 6. Other
+        <?php echo CHtml::checkBox('pba_othben', ( ( @$pba_othben) ? false:true ) , array('value'=>'Y','id'=>'pba_othben')); ?>
+        6. Other
         <br/>
-        <textarea name="othben_specific" id="othben_specific" cols="45" rows="5"
-                  placeholder="e.g. Give details of other benefits attached to this account."
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'othben_specific',
+                @$pba_specific_other_specific,
+                array(
+                        'id'=>'othben_specific',
+                        'rows'=>'5',
+                        'cols'=>'45',
+                        'style'=>'display:none',
+                        'placeholder'=>"e.g. Give details of other benefits attached to this account.",
+                    )
+                ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="6"/> 6. Added without their knowledge
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Added without their knowledge']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'6')); ?>
+        6. Added without their knowledge
     </td>
 </tr>
 <tr>
+    <?php 
+        $pbaBenefitsUsed = array();
+        if (!is_null(@$pba_specific_benefits_used)) {
+            $pbaBenefitsUsed = explode("|", $pba_specific_benefits_used);
+        }
+        $pbaBenefitsUsed = array_combine($pbaBenefitsUsed, $pbaBenefitsUsed);
+    ?>
     <td valign="middle">Benefits Used:</td>
     <td valign="middle">
-        <input name="pba_benefits_used[]" type="checkbox" id="pba_benefits_used[]" value="1"/> 1. RAC / AA / Breakdown
-        Cover
+       <?php echo CHtml::checkBox('pba_benefits_used[]', ( is_null(@$pbaBenefitsUsed['RAC / AA / Breakdown Cover']) ? false:true ) , array('id'=>'pba_benefits_used[]','value'=>'1')); ?>
+        1. RAC / AA / Breakdown Cover
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason7" value="7"/> 7. Tried to cancel but forced to keep it
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Tried to cancel but forced to keep it']) ? false:true ) , array('id'=>'pba_reason7','value'=>'7')); ?>
+        7. Tried to cancel but forced to keep it
         <br/>
-        <textarea name="ca_specific" id="ca_specific" cols="45" rows="5"
-                  placeholder="e.g. when they attempted to cancel they were told that the overdraft facility would be removed."
-                  style="display:none;"></textarea>
+        <?php 
+        echo CHtml::textArea(
+            'ca_specific',
+            @$pba_specific_cancelled_specific,
+            array(
+                    'id'=>'ca_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. when they attempted to cancel they were told that the overdraft facility would be removed.",
+                    'style'=>'display:none',
+                ));
+
+        ?>
+
+
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits_used[]" type="checkbox" id="pba_benefits_used[]" value="2"/> 2. Mobile Cover
+        <?php echo CHtml::checkBox('pba_benefits_used[]', ( is_null(@$pbaBenefitsUsed['Mobile Cover']) ? false:true ) , array('id'=>'pba_benefits_used[]','value'=>'2')); ?>
+        2. Mobile Cover
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason8" value="8"/> 8. Requirements not mentioned
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Requirements not mentioned']) ? false:true ) , array('id'=>'pba_reason8','value'=>'8')); ?>
+        8. Requirements not mentioned
         <br/>
-        <textarea name="re_specific" id="re_specific" cols="45" rows="5"
-                  placeholder="e.g. they were not told that they must specify a phone to add for the phone insurance."
-                  style="display:none;"></textarea>
+        <?php echo CHtml::textArea(
+            're_specific',
+            @$pba_specific_cancelled_specific, 
+            array(
+                'id'=>'re_specific',
+                'cols'=>'45',
+                'rows'=>'5',
+                'placeholder'=>"e.g. they were not told that they must specify a phone to add for the phone insurance.",
+                'style'=>'display:none'
+                ))
+        ?>        
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits_used[]" type="checkbox" id="pba_benefits_used[]" value="3"/> 3. Travel Insurance
+        <?php echo CHtml::checkBox('pba_benefits_used[]', ( is_null(@$pbaBenefitsUsed['Travel Insurance']) ? false:true ) , array('id'=>'pba_benefits_used[]','value'=>'3')); ?>
+        3. Travel Insurance
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason9" value="9"/> 9. Exclusions not satisfactorily
-        explained
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Exclusions not satisfactorily explained']) ? false:true ) , array('id'=>'pba_reason9','value'=>'9')); ?>
+        9. Exclusions not satisfactorily explained
         <br/>
-        <textarea name="ex_specific" id="ex_specific" cols="45" rows="5"
-                  placeholder="e.g. they were not informed that thier phone would not be covered when left in the car."
-                  style="display:none;"></textarea>
+        <?php echo CHtml::textArea(
+            'ex_specific',
+            @$pba_specific_exclusion_not_explained_specific,
+            array(
+                'id'=>'ex_specific',
+                'cols'=>'45',
+                'rows'=>'5',
+                'placeholder'=>"e.g. they were not informed that thier phone would not be covered when left in the car.",
+                'style'=>'display:none'
+                )); 
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits_used[]" type="checkbox" id="pba_benefits_used[]" value="4"/> 4. Overdraft
+        <?php echo CHtml::checkBox('pba_benefits_used[]', ( is_null(@$pbaBenefitsUsed['Overdraft']) ? false:true ) , array('id'=>'pba_benefits_used[]','value'=>'4')); ?>
+        4. Overdraft
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="10"/> 10. Told it would improve credit
-        rating
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Told it would improve credit rating']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'10')); ?>
+        10. Told it would improve credit rating
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_benefits_used[]" type="checkbox" id="pba_benefits_used[]" value="5"/> 5. Home Emergency Cover
+        <?php echo CHtml::checkBox('pba_benefits_used[]', ( is_null(@$pbaBenefitsUsed['Home Emergency Cover']) ? false:true ) , array('id'=>'pba_benefits_used[]','value'=>'5')); ?>
+        5. Home Emergency Cover
         <br/>
-        <textarea name="claim_specific" id="claim_specific" cols="45" rows="5"
-                  placeholder="e.g. Give details of claims the customer has made." style="display:none;"></textarea>
+        <?php echo CHtml::textArea(
+            'claim_specific',
+            @$pba_specific_exclusion_not_explained_specific,
+            array(
+                'id'=>'claim_specific',
+                'cols'=>'45',
+                'rows'=>'5',
+                'placeholder'=>"e.g. Give details of claims the customer has made.",
+                'style'=>'display:none'
+                )); 
+        ?>        
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="11"/> 11. Told would receive special
-        interest rates
+        <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Told would receive special interest rates']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'11')); ?>
+        11. Told would receive special interest rates
     </td>
 </tr>
 <tr>
     <td valign="middle">Registered Benefits:</td>
     <td valign="middle">
-        <input type="radio" name="pba_regben" id="pba_regben" value="Y"/> Yes
-        <input type="radio" name="pba_regben" value="N" checked="checked"/> No
+        <?php 
+        echo CHtml::radioButtonList(
+                'pba_regben', 
+                @$pba_specific_registered_benefits,
+                array(
+                        "Y"=>"Yes",
+                        "N"=>"No",
+                    ), 
+                array()
+            ); 
+        ?>
         <br/>
-        <textarea name="regben_specific" id="regben_specific" cols="45" rows="5"
-                  placeholder="e.g. Details of benefits registered." style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'regben_specific', 
+                @$pba_specific_registered_benefits_specify, 
+                array(
+                    'id'=>'regben_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. Details of benefits registered.",
+                    'style'=>"display:none;",
+                )
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_reason[]" type="checkbox" id="pba_reason[]" value="12"/> 12. Felt obliged/coerced to take the
-        account
+    <?php echo CHtml::checkBox('pba_reason[]', ( is_null(@$accountBenefitsReasonArr['Felt obliged/coerced to take the account']) ? false:true ) , array('id'=>'pba_reason[]','value'=>'12')); ?>
+        12. Felt obliged/coerced to take the account
     </td>
 </tr>
 <tr>
@@ -1259,87 +1408,183 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <td valign="middle">&nbsp;</td>
 </tr>
 <tr>
+
     <td valign="middle">Annual Reviews:</td>
     <td valign="middle">
-        <input type="radio" name="pba_review" value="1" checked="checked"/> Yes
-        <input type="radio" name="pba_review" value="0"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_review', 
+                @$pba_specific_annual_review, 
+                array(
+                        '1'=>'Yes',
+                        '0'=>'No',
+                    ), 
+                array()
+            ); 
+        ?>
     </td>
     <td valign="middle">TCF:</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="1"/> 1. Didn't feel confident that they are
-        dealing with firms where the fair treatment of customers is central to the corporate culture.
+        <?php 
+            $pbaTcfArr = array();
+            if (!is_null(@$pba_specific_tcf)) {
+                $pbaTcfArr = explode("|", $pba_specific_tcf);
+            }
+            $pbaTcfArr = array_combine(array_values($pbaTcfArr), $pbaTcfArr);
+            
+        ?>
+       <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr["Didn't feel confident that they are dealing with firms where the fair treatment of customers is central to the corporate culture."]) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'1'));
+        ?>
+        1. Didn't feel confident that they are dealing with firms where the fair treatment of customers is central to the corporate culture.
     </td>
 </tr>
 <tr>
     <td valign="middle">UK Resident:</td>
     <td valign="middle">
-        <input type="radio" name="pba_uk_resident" value="1" checked="checked"/> Yes
-        <input type="radio" name="pba_uk_resident" value="0"/> No (Over 183 days a year outside UK)
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_uk_resident', 
+                @$pba_specific_uk_residents, 
+                array(
+                        "1"=>"Yes",
+                        "0"=>"No (Over 183 days a year outside UK)",
+                    ), 
+                array()
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="2"/> 2. Account wasn't designed to meet the needs
-        of identified consumer groups and are not targeted accordingly.
+        <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr["Account wasn't designed to meet the needs of identified consumer groups and are not targeted accordingly."]) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'2'));
+        ?>
+        2. Account wasn't designed to meet the needs of identified consumer groups and are not targeted accordingly.
     </td>
 </tr>
 <tr>
     <td valign="middle">UK GP:</td>
     <td valign="middle">
-        <input type="radio" name="pba_ukgp" value="Y" checked="checked"/> Yes
-        <input type="radio" name="pba_ukgp" value="N"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_ukgp', 
+                @$pba_specific_uk_gp, 
+                array(
+                        "Y"=>"Yes",
+                        "N"=>"No",
+                    ), 
+                array()
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="3"/> 3. Not provided with clear information and
-        kept appropriately informed before, during and after the point of sale.
+        <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr['Not provided with clear information and kept appropriately informed before, during and after the point of sale.']) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'3'));
+        ?>
+        3. Not provided with clear information and kept appropriately informed before, during and after the point of sale.
     </td>
 </tr>
 <tr>
     <td valign="middle">Driving License:</td>
     <td valign="middle">
-        <input type="radio" name="pba_driver" value="Y" checked="checked"/> Yes
-        <input type="radio" name="pba_driver" value="N"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_driver', 
+                @$pba_specific_driving_license,
+                array(
+                        "Y"=>"Yes",
+                        "N"=>"No",
+                    ), 
+                array()
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="4"/> 4. Advice was unsuitable and did it take
-        account of their circumstances.
+        <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr['Advice was unsuitable and did it take account of their circumstances.']) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'4'));
+        ?>
+        
+        4. Advice was unsuitable and did it take account of their circumstances.
     </td>
 </tr>
 <tr>
     <td valign="middle">Armed Forces:</td>
     <td valign="middle">
-        <input type="radio" name="pba_armed_forces" id="show_text" value="1"/> Yes
-        <input type="radio" name="pba_armed_forces" value="0" checked="checked"/> No
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_armed_forces', 
+                @$pba_specific_armed_forces,
+                array(
+                        "1"=>"Yes",
+                        "0"=>"No",
+                    ), 
+                array()
+            ); 
+        ?>    
         <br/>
-        <textarea name="af_specific" id="af_specific" cols="45" rows="5"
-                  placeholder="e.g. Our client's position in the armed forces means that they have specific medical care providers that are beyond the scope of this cover."
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'af_specific', 
+                @$pba_specific_armed_forces_specify, 
+                array(
+                    'id'=>'af_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. Our client's position in the armed forces means that they have specific medical care providers that are beyond the scope of this cover.",
+                    'style'=>"display:none;",
+                )
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="5"/> 5. Account did not perform as firms have led
-        them to expect, and the associated service is of an unacceptable standard.
+        <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr['Account did not perform as firms have led them to expect, and the associated service is of an unacceptable standard.']) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'5'));
+        ?>
+        5. Account did not perform as firms have led them to expect, and the associated service is of an unacceptable standard.
     </td>
 </tr>
 <tr>
     <td valign="middle">Value for Money:</td>
     <td valign="middle">
-        <input name="pba_vfm" type="radio" value="Y" checked="checked"/> Yes
-        <input type="radio" name="pba_vfm" value="N"/> No
+
+    <?php 
+        echo CHtml::radioButtonList(
+            'pba_vfm',
+            @$pba_specific_value_for_money, 
+            array(
+                    'Y'=>"Yes",
+                    'N'=>"No",
+                ), 
+            array()
+        ); 
+    ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_tcf[]" type="checkbox" id="pba_tcf[]" value="6"/> 6. Faced unreasonable post-sale barriers
-        imposed by firms to change product, switch provider, submit a claim or make a complaint.
+        <?php 
+            echo CHtml::checkBox('pba_tcf[]', ( is_null(@$pbaTcfArr['Faced unreasonable post-sale barriers imposed by firms to change product, switch provider, submit a claim or make a complaint.']) ? false:true ) , array('id'=>'pba_tcf[]','value'=>'6'));
+        ?>
+        6. Faced unreasonable post-sale barriers imposed by firms to change product, switch provider, submit a claim or make a complaint.
     </td>
 </tr>
 <tr>
     <td valign="middle">Welcome Pack Received:</td>
     <td valign="middle">
-        <input name="pba_welcome" type="radio" value="Y"/> Yes
-        <input type="radio" name="pba_welcome" value="N"/> No
-        <input name="pba_welcome" type="radio" value="U" checked="checked"/> Don't Know
+    <?php 
+        echo CHtml::radioButtonList(
+            'pba_welcome', 
+            @$pba_specific_welcome_pack_received, 
+            array(
+                    "Y"=>"Yes",
+                    "N"=>"No",
+                    "U"=>"Don't Know",
+                ), 
+            array()
+        ); 
+    ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">&nbsp;</td>
@@ -1347,9 +1592,18 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
 <tr>
     <td valign="middle">Sign T&amp;C's:</td>
     <td valign="middle">
-        <input type="radio" name="pba_terms" value="Y"/> Yes
-        <input type="radio" name="pba_terms" value="N"/> No
-        <input name="pba_terms" type="radio" value="U" checked="checked"/> Don't Know
+        <?php 
+            echo CHtml::radioButtonList(
+                'pba_terms', 
+                @$pba_specific_sign_TC, 
+                array(
+                        'Y'=>'Yes',
+                        'N'=>'No',
+                        'U'=>"Don't Know",
+                    ), 
+                array()
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">&nbsp;</td>
@@ -1361,164 +1615,288 @@ Yii::app()->clientScript->registerCss('flashCssCode', $flashCssCode);
     <td valign="middle">&nbsp;</td>
 </tr>
 <tr>
+    <?php 
+        $pbaSpecificMobileCoverArr = array();
+        if (isset($pba_specific_mobile_cover)) {
+            $pbaSpecificMobileCoverArr = explode("|", $pba_specific_mobile_cover);
+        }
+        $pbaSpecificMobileCoverArr = array_combine($pbaSpecificMobileCoverArr, $pbaSpecificMobileCoverArr);
+    ?>
     <td valign="middle">Mobile Cover:</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="1"/> 1. Other Bank Cover
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Other Bank Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'1'));
+        ?>
+        1. Other Bank Cover
     </td>
     <td valign="middle">Holiday Pattern</td>
     <td valign="middle">
-        <select name="hols1" class="fields" id="hols1">
-            <option value="11" selected="selected">Never Holidays in Europe</option>
-            <option value="12">Holidays in Europe 1-3 times a year</option>
-            <option value="13">Holidays in Europe 3+ times a year</option>
-        </select>
+        <?php 
+        echo CHtml::dropDownList(
+                'hols1', 
+                @$pba_specific_holiday_pattern_first, 
+                array(
+                        '11'=>'Never Holidays in Europe',
+                        '12'=>'Holidays in Europe 1-3 times a year',
+                        '13'=>'Holidays in Europe 3+ times a year',
+                    ), 
+                array('id'=>'hols1','class'=>'fields')
+            );
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="2"/> 2. Other Gadget Insurer
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Other Gadget Insurer']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'2'));
+        ?>
+        2. Other Gadget Insurer
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <select name="hols2" class="fields" id="hols2">
-            <option value="21" selected="selected">Never Holidays outside Europe</option>
-            <option value="22">Holidays outside Europe 1-3 times a year</option>
-            <option value="23">Holidays outside Europe 3+ times a year</option>
-        </select>
-    </td>
-</tr>
-<tr>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="3"/> 3. Mobile Network Cover
-    </td>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <select name="hols3" class="fields" id="hols3">
-            <option value="31" selected="selected">Never does Winter Sports</option>
-            <option value="32">Does Winter Sports 1-3 times a year</option>
-            <option value="33">Does Winter Sports 3+ times a year</option>
-        </select>
+        <?php 
+            echo CHtml::dropDownList(
+                'hols2', 
+                @$pba_specific_holiday_pattern_second, 
+                array(
+                        '21'=>'Never Holidays in Europe',
+                        '22'=>'Holidays in Europe 1-3 times a year',
+                        '23'=>'Holidays in Europe 3+ times a year',
+                    ), 
+                array('id'=>'hols2','class'=>'fields')
+            ); 
+        ?>
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="4"/> 4. Home Insurance
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Mobile Network Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'3'));
+        ?>
+        3. Mobile Network Cover
+    </td>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::dropDownList(
+                'hols3',
+                @$pba_specific_holiday_pattern_third, 
+                array(
+                        '31'=>'Never Holidays in Europe',
+                        '32'=>'Holidays in Europe 1-3 times a year',
+                        '33'=>'Holidays in Europe 3+ times a year',
+                    ), 
+                array('id'=>'hols3','class'=>'fields')
+            ); 
+        ?>
+    </td>
+</tr>
+<tr>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Home Insurance']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'4'));
+        ?>
+        4. Home Insurance
     </td>
     <td valign="middle">Breakdown Cover:</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="11"/> 1. Company Car
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Company Car']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'11'));
+        ?>
+        1. Company Car
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="5"/> 5. No Mobile Phone
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['No Mobile Phone']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'5'));
+        ?>
+        5. No Mobile Phone
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="12"/> 2. No Car
-    </td>
-</tr>
-<tr>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="24"/> 6. No Smartphone
-    </td>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="13"/> 3. Third Party Cover
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['No Car']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'12'));
+        ?>
+        2. No Car
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="21"/> 7. Declined Claim
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['No Smartphone']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'24'));
+        ?>
+        6. No Smartphone
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="14"/> 4. Old Car
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Third Party Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'13'));
+        ?>
+        3. Third Party Cover
+    </td>
+</tr>
+<tr>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Declined Claim']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'21'));
+        ?>
+        7. Declined Claim
+    </td>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Old Car']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'14'));
+        ?>
+        4. Old Car
     </td>
 </tr>
 <tr>
     <td valign="middle">Travel Cover:</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="6"/> 1. Over Cover Age
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Over Cover Age']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'6'));
+        ?>
+        1. Over Cover Age
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="23"/> 5. Declined Claim
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Declined Claim']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'23'));
+        ?>
+        5. Declined Claim
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="7"/> 2. Doesn't Travel
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr["Doesn't Travel"]) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'7'));
+        ?>
+        2. Doesn't Travel
     </td>
     <td valign="middle">Overdraft</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="16"/> 1. Wrongly Advised
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Wrongly Advised']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'16'));
+        ?>
+        1. Wrongly Advised
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="15"/> 3. Travels longer than 31 days
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Travels longer than 31 days']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'15'));
+        ?>
+        3. Travels longer than 31 days
     </td>
     <td valign="middle">Home Emergency</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="17"/> 1. Third Party Cover
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Third Party Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'17'));
+        ?>
+        1. Third Party Cover
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
 
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable8" value="8"/> 4. Pre Existing Condition
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Pre Existing Condition']) ? false:true ) , array('id'=>'pba_unsuitable8','value'=>'8'));
+        ?>
+        4. Pre Existing Condition
         <br/>
-        <textarea name="health_specific" id="health_specific" cols="45" rows="5"
-                  placeholder="e.g. Give details of health problems." style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'health_specific', 
+                @$pba_specific_health_specific, 
+                array(
+                    'id'=>'health_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. Give details of health problems.",
+                    'style'=>"display:none;",
+                )
+            ); 
+        ?>
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="18"/> 2. Landlords Cover
-    </td>
-</tr>
-<tr>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="9"/> 5. Sought Own Cover
-    </td>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="19"/> 3. Parents / Other Accom
-    </td>
-</tr>
-<tr>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="10"/> 6. High Risk Travel
-    </td>
-    <td valign="middle">&nbsp;</td>
-    <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="20"/> 4. Declined Claim
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Landlords Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'18'));
+        ?>
+        2. Landlords Cover
     </td>
 </tr>
 <tr>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_unsuitable[]" type="checkbox" id="pba_unsuitable[]" value="22"/> 7. Declined Claim
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Sought Own Cover']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'9'));
+        ?>
+        5. Sought Own Cover
     </td>
     <td valign="middle">&nbsp;</td>
     <td valign="middle">
-        <input name="pba_othinskeep" type="checkbox" id="pba_othinskeep" value="TRUE" checked="checked"/> Kept other
-        insurances after PBA sold
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Parents / Other Accom']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'19'));
+        ?>
+        3. Parents / Other Accom
+    </td>
+</tr>
+<tr>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['High Risk Travel']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'10'));
+        ?>
+        6. High Risk Travel
+    </td>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Declined Claim']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'20'));
+        ?>
+        4. Declined Claim
+    </td>
+</tr>
+<tr>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+        <?php 
+            echo CHtml::checkBox('pba_unsuitable[]', ( is_null(@$pbaSpecificMobileCoverArr['Declined Claim']) ? false:true ) , array('id'=>'pba_unsuitable[]','value'=>'22'));
+        ?>
+
+        7. Declined Claim
+    </td>
+    <td valign="middle">&nbsp;</td>
+    <td valign="middle">
+            <?php 
+                echo CHtml::checkBox('pba_othinskeep', ( is_null(@$pba_specific_keep_insurance_sold) ? false:true ) , array('id'=>'pba_othinskeep','value'=>'TRUE'));
+            ?>
+        Kept other insurances after PBA sold
         <br/>
-        <textarea name="othins_specific" id="othins_specific" cols="45" rows="5"
-                  placeholder="e.g. Give details of why the customer cancelled the other insurances."
-                  style="display:none;"></textarea>
+        <?php 
+            echo CHtml::textArea(
+                'othins_specific', 
+                @$kept_other_insurances_after_PBA_sold_specification, 
+                array(
+                    'id'=>'othins_specific',
+                    'cols'=>'45',
+                    'rows'=>'5',
+                    'placeholder'=>"e.g. Give details of why the customer cancelled the other insurances.",
+                    'style'=>"display:none;",
+                )
+            ); 
+        ?>
     </td>
 </tr>
 <tr>

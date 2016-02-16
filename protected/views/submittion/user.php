@@ -9,6 +9,7 @@
         'title'=>'Leads submitted by '.$userModel->username,
     ));
 ?>
+    <br>
     <?php if (Yii::app()->user->name === 'admin'): ?>
     <?php echo CHtml::link('<i class=" icon-download icon-white"></i> Export contents', array('export','username'=>$userModel->username),['class'=>'btn btn-primary']); ?>
     <?php endif ?>
@@ -69,13 +70,18 @@
         // 'policy_holder_1_email',          // display the 'title' attribute
         // 'policy_holder_1_dayTimeTelephone',          // display the 'title' attribute
         array(
+            'class'=>'application.components.RepopulateLinkColumn',
+            'header'=>'View',
+        ),
+        array(
             'class'=>'CButtonColumn',
-            'template'=>'{view} | {delete}',
+            'header'=>'delete',
+            'template'=>'{delete}',
             'buttons'=>array(
                 'delete'=>array('url'=>'$this->grid->controller->createUrl("/mainLead/delete", array("id"=>$data->primaryKey))'),
-                'view'=>array('url'=>'$this->grid->controller->createUrl("/mainLead/view", array("id"=>$data->primaryKey))')
             )
         ),
+
     ),
     ));
 

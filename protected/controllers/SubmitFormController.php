@@ -34,7 +34,18 @@ class SubmitFormController extends Controller
 	        $mainFormHelper = new MainFormHelper();
 	        $mainLeadObj = $mainFormHelper->setFormValToObj($_POST);
 	        $mainLeadObj->user_id = Yii::app()->user->id;
-	        if ($mainLeadObj->save()) {
+	        if ($mainLeadObj->validate()) {
+	        	if (isset($_POST['id'])) {
+	        		$recordId = intval($_POST['id']);
+	        		$foundModel = MainLeadModel::model()->findByPk($recordId);
+	        		$ownerIdContainer = $foundModel->user_id;
+	        		$foundModel->attributes = $mainLeadObj->attributes;
+	        		$foundModel->user_id = $ownerIdContainer;
+	        		$foundModel->update();
+	        	}else{
+	        		$mainLeadObj->user_id = Yii::app()->user->id;
+	        		$mainLeadObj->save();
+	        	}
 	        	Yii::app()->user->setFlash("success","Success! Lead saved");
 	        }else{
 				Yii::app()->user->setFlash("error",CHtml::errorSummary($mainLeadObj));

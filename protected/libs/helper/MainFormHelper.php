@@ -36,7 +36,15 @@ class MainFormHelper
         $mainLeadObj->policy_holder_2_street = @$postData['2_add_street'];
         $mainLeadObj->policy_holder_1_town = @$postData['add_town'];
         $mainLeadObj->policy_holder_2_town = @$postData['2_add_town'];
+
         $mainLeadObj->add_account = @$postData['add_account'];
+
+        $mainLeadObj->includeFreePPIAssesment = @$postData['wants_cc'];
+        if (isset($postData['wants_cc']) && $postData['wants_cc'] == '1') {
+            $mainLeadObj->includeFreePPIAssesment = "Yes";
+        }else{
+            $mainLeadObj->includeFreePPIAssesment = "No";
+        }
 
         $mainLeadObj->ppi_account_details_type = @$postData['PPI-type'];
         $mainLeadObj->ppi_account_details_credit_provider = @$postData['PPI-provider'];
@@ -47,6 +55,16 @@ class MainFormHelper
         $mainLeadObj->ppi_specific_employment_status_then = @$postData['emp_then'];
         $mainLeadObj->ppi_specific_employment_status_now = @$postData['emp_now'];
         $mainLeadObj->ppi_specific_claimed = @$postData['ppi_claimed'];
+
+        $ppiMissoldReasonTranslator = new PPIReasonTranslator();
+        if (isset($postData['ppi_reason'])) {
+            $ppiTranslatedReasonsMisslead = array();
+            foreach ($postData['ppi_reason'] as $key => $value) {
+                $ppiTranslatedReasonsMisslead[] = $ppiMissoldReasonTranslator->translate($value);
+            }
+            $mainLeadObj->ppi_specific_misselling_reasons = implode("|",$ppiTranslatedReasonsMisslead);
+        }
+
 
         $mainLeadObj->pba_account_details_type = @$postData['PBA-type'];
         $mainLeadObj->pba_account_details_credit_provider = @$postData['PBA-provider'];
@@ -92,6 +110,11 @@ class MainFormHelper
             }
             $mainLeadObj->pba_specific_account_benefits_reason = implode("|", $pbaReasonTranslatedCollection);
         }
+
+
+        $mainLeadObj->pba_othben = @$postData['pba_othben'];
+        
+        $mainLeadObj->ml_specific = @$postData['ml_specific'];
 
         $mainLeadObj->pba_specific_missold_reason = @$postData['pba_specific_missold_reason'];
 
@@ -140,6 +163,7 @@ class MainFormHelper
             }
             $mainLeadObj->pba_specific_mobile_cover = implode("|", $translatedCollection);
         }
+
 //        if ((@$postData['pba_unsuitable'] !== null) && !empty($postData['pba_unsuitable'])) {
 //            $mainLeadObj->pba_specific_travel_cover = implode("|", @$postData['pba_unsuitable']);
 //        }
@@ -155,6 +179,12 @@ class MainFormHelper
             $mainLeadObj->pba_specific_holiday_pattern_third = HolidayPatternTranslator::translator($postData['hols3']);
         }
         $mainLeadObj->pba_specific_keep_insurance_sold = @$postData['pba_othinskeep'];
+
+
+
+        
+
+
         /**
          * Hotkey new fields
          */
@@ -165,7 +195,11 @@ class MainFormHelper
         $mainLeadObj->ever_made_claim_before = @$postData['ever_made_claim_before'];
         $mainLeadObj->happy_to_claim= @$postData['happy_to_claim'];
         $mainLeadObj->time_to_talk = @$postData['time_to_talk_hrs'] . ":".@$postData['time_to_talk_mins'];
+
         $mainLeadObj->reason_for_delay = @$postData['reason_for_delay'];
+
+        $mainLeadObj->kept_other_insurances_after_PBA_sold_specification = @$postData['othins_specific'];
+
         return $mainLeadObj;
     }
 
