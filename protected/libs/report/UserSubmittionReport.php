@@ -14,7 +14,7 @@ class UserSubmittionReport {
     public function getReport(){
     	$finalReport = [];
         /*get all agents*/
-        $agentsUsername = ["thomasgriffiths", "jamiemorris", "lukeperry", "Christhyers","gemma"];
+        $agentsUsername = ["thomasgriffiths", "jamiemorris", "lukeperry", "Christhyers","gemma","tmccay"];
         foreach ($agentsUsername as $key => $currentUsername) {
         	$userModel = User::model()->findByAttributes(array('username'=>$currentUsername));
         	if ($userModel) {
