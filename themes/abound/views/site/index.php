@@ -869,7 +869,8 @@ if (isset($_GET['id'])) {
     </td>
     <td valign="middle">Credit Provider:</td>
     <td valign="middle"><span id="sprytextfield4">
-        <?php echo CHtml::textField('PBA-provider', @$pba_account_details_type, array('id'=>'PBA-provider','autocomplete'=>'off')); ?>
+        <?php //echo CHtml::textField('PBA-provider', @$pba_account_details_type, array('id'=>'PBA-provider','autocomplete'=>'off')); ?>
+        <?php echo CHtml::textField('PBA-provider', @$pba_account_details_credit_provider, array('id'=>'PBA-provider','autocomplete'=>'off')); ?>
         <span class="textfieldRequiredMsg">A value is required.</span></span>
         *
     </td>
