@@ -19,10 +19,18 @@
 
 ?>
 <?php 
+
     $this->widget('zii.widgets.grid.CGridView', array(
     'filter'=>$leadModel,
     'dataProvider'=>$leadModel->search(),
     'columns'=>array(
+        array(
+            'name'=>'date_created',
+            'filter'=>CHtml::textField('name', '', array('style'=>'visibility: hidden;')),
+            'header'=>'Date Submitted',
+            'value'=>'date("M j, Y H:i:s", strtotime($data->date_created))',
+        ),
+        
         'id', 
         'closer',
         'policy_holder_1_title',          // display the 'title' attribute
