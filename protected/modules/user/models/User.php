@@ -151,7 +151,7 @@ class User extends CActiveRecord
 			return isset($_items[$type]) ? $_items[$type] : false;
 	}
 	
-/**
+	/**
      * Retrieves a list of models based on the current search/filter conditions.
      * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
      */
@@ -178,6 +178,14 @@ class User extends CActiveRecord
 				'pageSize'=>Yii::app()->getModule('user')->user_page_size,
 			),
         ));
+    }
+    public function afterSave()
+    {
+    	if ($this->isNewRecord) {
+			$authManager = Yii::app()->authManager;
+    		$authManager->assign("agents",$this->id);
+    	}
+    	return parent::afterSave();
     }
 
     public function getCreatetime() {

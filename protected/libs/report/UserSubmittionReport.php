@@ -14,7 +14,8 @@ class UserSubmittionReport {
     public function getReport(){
     	$finalReport = [];
         /*get all agents*/
-        $agentsUsername = ["thomasgriffiths", "jamiemorris", "lukeperry", "Christhyers","gemma","tmccay","alexdavies"];
+        // $agentsUsername = ["thomasgriffiths", "jamiemorris", "lukeperry", "Christhyers","gemma","tmccay","alexdavies"];
+        $agentsUsername = $this->getAgents();
         foreach ($agentsUsername as $key => $currentUsername) {
         	$userModel = User::model()->findByAttributes(array('username'=>$currentUsername));
         	if ($userModel) {
@@ -25,5 +26,26 @@ class UserSubmittionReport {
         	}
         }
         return $finalReport;
+    }
+    /**
+     * Returns list of agents 
+     * @return array list of agents
+     */
+    public function getAgents()
+    {
+        $agentNamesCollection = array();
+        $sqlCommand = <<<EOL
+        select  distinct users.*
+        from users
+        inner join authassignment on authassignment.userid = users.id
+        where 
+        authassignment.itemname = 'agents' and 
+        users.superuser = false
+EOL;
+        $resultList = Yii::app()->db->createCommand($sqlCommand)->queryAll();
+        foreach ($resultList as $key => $value) {
+            $agentNamesCollection[] = $value['username'];
+        }
+        return $agentNamesCollection;
     }
 }

@@ -40,8 +40,9 @@ class AdminController extends Controller
 	{
 		$model=new User('search');
         $model->unsetAttributes();  // clear any default values
-        if(isset($_GET['User']))
+        if(isset($_GET['User'])){
             $model->attributes=$_GET['User'];
+        }
 
         $this->render('index',array(
             'model'=>$model,
